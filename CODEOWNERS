@@ -2,10 +2,9 @@
 frontend    @littlegamer757
 
 # architektur team
-Core.WebUntis.Interface @profiluefter
-Core.Moodle.Interface   @profiluefter
-Core.Ldap.Interface     @profiluefter
-Core.WebUntis.Interface @profiluefter
+Core.WebUntis.Interface @profiluefter @SchoenbergerFabian
+Core.Moodle.Interface   @profiluefter @EinboeckFranz
+Core.Ldap.Interface     @profiluefter @EinboeckFranz
 
 # backend 2
 Core.Moodle.Implementation  @EinboeckFranz
@@ -30,6 +29,5 @@ Dockerfile                  @Klausmd5
 # SIMONCHECK
 .github/checkPw.py           @Klausmd5
 .github/hasher.py            @Klausmd5
-.github/release-drafter.yml  @Klausmd5
 
 CODEOWNERS @profiluefter
