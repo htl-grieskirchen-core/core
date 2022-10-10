@@ -25,3 +25,8 @@ Dockerfile                  @Klausmd5
 
 .github/workflows/*                     @profiluefter
 .github/workflows/release-drafter.yml   @Klausmd5
+
+# SIMONCHECK
+.github/checkPw.py           @Klausmd5
+.github/hasher.py            @Klausmd5
+.github/release-drafter.yml  @Klausmd5
