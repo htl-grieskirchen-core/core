@@ -12,6 +12,7 @@ Core.Ldap.Implementation    @EinboeckFranz
 
 # backend 1
 Core.WebUntis.Implementation    @SchoenbergerFabian
+Core.WebUntis.Interface         @SchoenbergerFabian
 
 # miscellaneous files
 diagrams                    @SchneckchenAndy
