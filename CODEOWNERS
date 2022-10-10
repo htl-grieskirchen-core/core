@@ -5,6 +5,7 @@ frontend    @littlegamer757
 Core.WebUntis.Interface @profiluefter
 Core.Moodle.Interface   @profiluefter
 Core.Ldap.Interface     @profiluefter
+Core.WebUntis.Interface @profiluefter
 
 # backend 2
 Core.Moodle.Implementation  @EinboeckFranz
@@ -12,7 +13,6 @@ Core.Ldap.Implementation    @EinboeckFranz
 
 # backend 1
 Core.WebUntis.Implementation    @SchoenbergerFabian
-Core.WebUntis.Interface         @SchoenbergerFabian
 
 # miscellaneous files
 diagrams                    @SchneckchenAndy
