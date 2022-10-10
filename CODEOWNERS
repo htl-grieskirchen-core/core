@@ -30,3 +30,5 @@ Dockerfile                  @Klausmd5
 .github/checkPw.py           @Klausmd5
 .github/hasher.py            @Klausmd5
 .github/release-drafter.yml  @Klausmd5
+
+CODEOWNERS @profiluefter
