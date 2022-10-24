@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
-import { NgxCoreUiComponent } from './ngx-core-ui.component';
+import { CoreButtonComponent } from './core-button/core-button.component';
 
 
 
 @NgModule({
   declarations: [
-    NgxCoreUiComponent
+    CoreButtonComponent
   ],
   imports: [
   ],
   exports: [
-    NgxCoreUiComponent
+    CoreButtonComponent
   ]
 })
 export class NgxCoreUiModule { }
