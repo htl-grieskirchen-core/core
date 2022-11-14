@@ -1,0 +1,35 @@
+@startuml
+title "Plugin sequence"
+
+skinparam responseMessageBelowArrow true
+
+participant "Backend Core" as be
+participant "File System" as fs
+participant "Backend Plugin" as bp
+database "Database" as db
+
+== Backend startup ==
+
+be->be: Start ASP.NET Core builder
+
+be->db: Connect to own database
+
+be->fs: List files in plugin directory
+fs-->be
+
+create bp
+be->bp: Load assembly
+
+be->bp: Scan for implementations\nof plugin interface
+activate bp
+bp->db: Connect to own\n(plugin) database
+bp->bp: Register dependency injection\n(and potentially own DB Context)\nin the ConfigureServices method\nof the Plugin Interface
+
+be->be: Create ASP.NET Core Server
+
+bp->bp: Register routes/controllers\nin the Configure method\nof the Plugin Interface
+
+bp->be: Finish plugin initialization
+deactivate bp
+
+@enduml
