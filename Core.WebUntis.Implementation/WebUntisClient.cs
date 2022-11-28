@@ -133,12 +133,21 @@ public class WebUntisClient : IWebUntisClient
             .ToList();
     }
 
-    public async Task<List<Teacher>> GetTeachers()
+    public List<Teacher> GetTeachers()
     {
-        var teacherResponse = await JsonRpcRequest<TeacherResponse[]>("getTeachers");
-        return teacherResponse
-            .Select(x => x.Convert())
+        var teachers = File.ReadLines("CSV/teachers.csv")
+            .Skip(1)
+            .Select(x => x.Split(";"))
+            .Select(x => new Teacher
+            {
+                Id = Int32.Parse(x[0]),
+                Name = x[1],
+                LastName = x[2],
+                FirstName = x[3]
+            }
+            )
             .ToList();
+        return teachers;
     }
 
     public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
