@@ -13,8 +13,7 @@ public interface IWebUntisClient
     public Task<IEnumerable<Holiday>> GetHolidays();
     [Obsolete("Deprecated due to insufficient rights")]
     public Task<List<Student>> GetStudents();
-    [Obsolete("Deprecated due to insufficient rights")]
-    public Task<List<Teacher>> GetTeachers();
+    public List<Teacher> GetTeachers();
     public Task<List<Timetable>> GetTimetable(ElementType type, int? personId, DateTime startDate, DateTime endDate);
     [Obsolete("Deprecated due to unknown documentation")]
     public Task<List<ExamType>> GetExamTypes();

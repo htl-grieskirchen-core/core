@@ -1,4 +1,5 @@
 using Core.Backend.Secure.Services;
+using Core.WebUntis.Interface.Types;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Backend.Secure.Controllers;
@@ -12,6 +13,13 @@ public class WebUntisController : ControllerBase
     public WebUntisController(WebUntisService webUntisService)
     {
         _webUntisService = webUntisService;
+    }
+
+    [HttpGet]
+    public async Task<List<Teacher>> GetTeachers()
+    {
+        var teachers = await _webUntisService.GetTeachers();
+        return teachers;
     }
 
     //[Authorize(Policy = "Auth-Token")]

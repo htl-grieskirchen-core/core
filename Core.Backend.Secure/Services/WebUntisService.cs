@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Core.Backend.Secure.Auth;
 using Core.WebUntis.Implementation;
+using Core.WebUntis.Interface.Types;
 
 namespace Core.Backend.Secure.Services;
 
@@ -14,11 +15,14 @@ public class WebUntisService
         _credService = credService;
     }
 
-    private async Task<WebUntisClient> GetWebUntisClient(ClaimsPrincipal user)
+    private async Task<WebUntisClient> GetWebUntisClient(ClaimsPrincipal? user = null)
     {
-        var webUntisCredentials = GetWebUntisCredentials(user);
         var webUntisClient = new WebUntisClient("https://arche.webuntis.com", "htbla-grieskirchen", "Synopsis");
-        await webUntisClient.AuthenticateWithSecret(webUntisCredentials.Username, webUntisCredentials.Secret);
+        if (user != null)
+        {
+            var webUntisCredentials = GetWebUntisCredentials(user);
+            await webUntisClient.AuthenticateWithSecret(webUntisCredentials.Username, webUntisCredentials.Secret);
+        }
         return webUntisClient;
     }
 
@@ -36,6 +40,13 @@ public class WebUntisService
             Username = user.GetUsername(),
             Secret = secret
         };
+    }
+
+    public async Task<List<Teacher>> GetTeachers()
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var teachers = webUntisClient.GetTeachers();
+        return teachers;
     }
 
     private class WebUntisCredentials
