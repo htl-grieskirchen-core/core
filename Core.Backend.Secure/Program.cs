@@ -17,8 +17,9 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
-    // TODO: setup production database
-    Console.WriteLine("Production database not setup yet");
+    var connectionString = builder.Configuration.GetConnectionString("Production");
+    builder.Services.AddDbContext<CoreContext>(db =>
+        db.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 }
 
 builder.Services.AddTransient<CredService>();
@@ -34,10 +35,7 @@ builder.Services.AddTransient<WebUntisService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(o =>
-{
-
-});
+builder.Services.AddSwaggerGen();
 
 builder.AddCookieAuth(true);
 
@@ -56,7 +54,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors(policyBuilder => policyBuilder
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .WithOrigins(app.Configuration["MainframeOrigin"])
+);
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Configured mainframe origin to {Origin}", app.Configuration["MainframeOrigin"]);
 
 app.UseAuthentication();
 app.UseAuthorization();

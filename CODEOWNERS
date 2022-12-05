@@ -12,6 +12,9 @@ Core.Ldap.Interface          @profiluefter @EinboeckFranz
 Core.Backend/Pluginloader.cs @Klausmd5
 Core.Backend.Secure          @Klausmd5
 
+deployment                   @profiluefter
+mainframe                    @profiluefter
+
 Core.Backend.Secure/Services/RsaService.cs @Klausmd5
 Core.Backend.Secure/Services/JwtService.cs @Klausmd5
 Core.Backend.Secure/Services/CredService.cs @Klausmd5
@@ -26,9 +29,6 @@ Core.WebUntis.Implementation    @SchoenbergerFabian
 # miscellaneous files
 diagrams                    @SchneckchenAndy
 .editorconfig               @profiluefter
-
-docker-compose.yml          @Klausmd5
-Dockerfile                  @Klausmd5
 
 .pre-commit-config.yaml     @profiluefter
 .github/release-drafter.yml @Klausmd5

@@ -105,6 +105,7 @@ public static class AuthConfigurator
             ValidAudience = builder.Configuration["Jwt:Audience"],
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new RsaSecurityKey(RsaService.ImportRSAKey("./keys/" + builder.Configuration[!isPrivateKey ? "RSA:public-key" : "RSA:private-key"]))
+            // TODO: deduplicate
+            IssuerSigningKey = new RsaSecurityKey(RsaService.ImportRSAKey("./keys/" + builder.Configuration[!isPrivateKey ? "RSA:public-key" : "RSA:private-key"], isPrivateKey))
         };
 }

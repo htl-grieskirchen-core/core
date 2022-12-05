@@ -23,20 +23,20 @@ public class JwtService
         DateTime expiry;
         if (user.GetType() == typeof(AuthToken))
         {
-            expiry = _conf["Auth-Token-Expiration-Unit"] == "days"
-                ? DateTime.Now.AddDays(Convert.ToInt32(_conf["ID-Token-Expiration"]))
-                : DateTime.Now.AddMinutes(Convert.ToInt32(_conf["ID-Token-Expiration"]));
+            expiry = _conf["JWT:Auth-Token-Expiration-Unit"] == "days"
+                ? DateTime.Now.AddDays(Convert.ToInt32(_conf["JWT:Auth-Token-Expiration"]))
+                : DateTime.Now.AddMinutes(Convert.ToInt32(_conf["JWT:Auth-Token-Expiration"]));
         }
         else
         {
-            expiry = _conf["ID-Token-Expiration-Unit"] == "days"
-                ? DateTime.Now.AddDays(Convert.ToInt32(_conf["ID-Token-Expiration"]))
-                : DateTime.Now.AddMinutes(Convert.ToInt32(_conf["ID-Token-Expiration"]));
+            expiry = _conf["JWT:ID-Token-Expiration-Unit"] == "days"
+                ? DateTime.Now.AddDays(Convert.ToInt32(_conf["JWT:ID-Token-Expiration"]))
+                : DateTime.Now.AddMinutes(Convert.ToInt32(_conf["JWT:ID-Token-Expiration"]));
         }
 
         var token = new JwtSecurityToken(
-            issuer: _conf["Jwt:Issuer"],
-            audience: _conf["Jwt:Audience"],
+            issuer: _conf["JWT:Issuer"],
+            audience: _conf["JWT:Audience"],
             claims: user.Claims,
             expires: expiry,
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.RsaSha256Signature));
