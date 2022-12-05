@@ -61,6 +61,19 @@ public class WebUntisService
         return await webUntisClient.GetRooms();
     }
 
+    public async Task<List<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
+    {
+        var webUntisClient = await GetWebUntisClient();
+        return await webUntisClient.GetTimetable(ElementType.Teacher, personId, startDate, endDate);
+    }
+
+    public async Task<List<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
+    {
+        var webUntisClient = await GetWebUntisClient();
+        return await webUntisClient.GetTimetable(ElementType.Student, personId, startDate, endDate);
+    }
+
+
     private class WebUntisCredentials
     {
         public string Username = null!;

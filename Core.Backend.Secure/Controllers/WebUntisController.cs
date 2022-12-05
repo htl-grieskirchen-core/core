@@ -34,6 +34,17 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetRooms();
     }
 
+    [HttpGet("TeacherTimetable")]
+    public async Task<List<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
+    {
+        return await _webUntisService.GetTimetableFromTeacher(startDate, endDate, personId);
+    }
+    [HttpGet("StudentTimetable")]
+    public async Task<List<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
+    {
+        return await _webUntisService.GetTimetableFromStudent(startDate, endDate, personId);
+    }
+
 
     //[Authorize(Policy = "Auth-Token")]
 }
