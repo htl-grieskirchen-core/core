@@ -28,6 +28,12 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetSubject();
     }
 
+    [HttpGet("Rooms")]
+    public async Task<List<Room>> GetRooms()
+    {
+        return await _webUntisService.GetRooms();
+    }
+
 
     //[Authorize(Policy = "Auth-Token")]
 }

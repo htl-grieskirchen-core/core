@@ -55,6 +55,12 @@ public class WebUntisService
         return await webUntisClient.GetSubjects();
     }
 
+    public async Task<List<Room>> GetRooms()
+    {
+        var webUntisClient = await GetWebUntisClient();
+        return await webUntisClient.GetRooms();
+    }
+
     private class WebUntisCredentials
     {
         public string Username = null!;
