@@ -15,11 +15,18 @@ public class WebUntisController : ControllerBase
         _webUntisService = webUntisService;
     }
 
-    [HttpGet]
+    [HttpGet("Teachers")]
     public async Task<IEnumerable<Teacher>> GetTeachers()
     {
         var teachers = await _webUntisService.GetTeachers();
         return teachers;
+    }
+
+    [HttpGet("Students")]
+    public async Task<IEnumerable<Student>> GetStudents()
+    {
+        var students = await _webUntisService.GetStudents();
+        return students;
     }
 
     //[Authorize(Policy = "Auth-Token")]

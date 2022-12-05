@@ -11,18 +11,12 @@ public interface IWebUntisClient
     public Task<IEnumerable<Room>> GetRooms();
     public Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate);
     public Task<IEnumerable<Holiday>> GetHolidays();
-
-    [Obsolete("Deprecated due to insufficient rights")]
     public Task<IEnumerable<Student>> GetStudents();
-
-    public IEnumerable<Teacher> GetTeachers();
-
+    public Task<IEnumerable<Teacher>> GetTeachers();
     public Task<IEnumerable<Timetable>> GetTimetable(ElementType type, int? personId, DateTime startDate,
         DateTime endDate);
-
     [Obsolete("Deprecated due to unknown documentation")]
     public Task<IEnumerable<ExamType>> GetExamTypes();
-
     [Obsolete("Deprecated due to insufficient rights")]
     public Task<IEnumerable<Exam>> GetExams(int examTypeId, DateTime startDate, DateTime endDate);
 }

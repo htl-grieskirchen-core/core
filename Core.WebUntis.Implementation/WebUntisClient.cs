@@ -45,7 +45,7 @@ public class WebUntisClient : IWebUntisClient
             AddToken(token);
         }
 
-        var handler = new HttpClientHandler {CookieContainer = _cookies};
+        var handler = new HttpClientHandler { CookieContainer = _cookies };
         _httpClient = new HttpClient(handler);
     }
 
@@ -64,8 +64,7 @@ public class WebUntisClient : IWebUntisClient
                 Password = password,
                 Client = _client
             },
-            new Dictionary<string, string>
-            {
+            new Dictionary<string, string> {
                 {"school", _school}
             }
         );
@@ -85,12 +84,9 @@ public class WebUntisClient : IWebUntisClient
             BaseUrlJsonRpcIntern,
             GetJsonRpcRequestContent(
                 "getUserData2017",
-                new object[]
-                {
-                    new AuthenticateWithSecretRequest
-                    {
-                        Auth = new AuthenticateWithSecretRequestAuth
-                        {
+                new object[] {
+                    new AuthenticateWithSecretRequest {
+                        Auth = new AuthenticateWithSecretRequestAuth {
                             ClientTime = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
                             User = user,
                             Otp = otp.ToString()
@@ -98,8 +94,7 @@ public class WebUntisClient : IWebUntisClient
                     }
                 }
             ),
-            new Dictionary<string, string>
-            {
+            new Dictionary<string, string> {
                 {"school", _school}
             }
         );
@@ -137,18 +132,18 @@ public class WebUntisClient : IWebUntisClient
             .Select(x => x.Convert());
     }
 
-    public IEnumerable<Teacher> GetTeachers()
+    public async Task<IEnumerable<Teacher>> GetTeachers()
     {
         var teachers = File.ReadLines("CSV/teachers.csv")
             .Skip(1)
             .Select(x => x.Split(";"))
             .Select(x => new Teacher
-                {
-                    Id = Int32.Parse(x[0]),
-                    Name = x[1],
-                    LastName = x[2],
-                    FirstName = x[3]
-                }
+            {
+                Id = Int32.Parse(x[0]),
+                Name = x[1],
+                LastName = x[2],
+                FirstName = x[3]
+            }
             );
         return teachers;
     }
@@ -188,7 +183,7 @@ public class WebUntisClient : IWebUntisClient
         var timetableResponse = await JsonRpcRequest<TimetableResponse[]>("getTimetable",
             new TimetableRequest
             {
-                Type = (int) type,
+                Type = (int)type,
                 Id = personId,
                 StartDate = UntisDateTimeMethods.ConvertDateToUntisDate(startDate),
                 EndDate = UntisDateTimeMethods.ConvertDateToUntisDate(endDate)
@@ -213,10 +208,23 @@ public class WebUntisClient : IWebUntisClient
 
     public async Task<IEnumerable<Student>> GetStudents()
     {
-        var holidayResponse = await JsonRpcRequest<StudentResponse[]>(
-            method: "getStudents"
-        );
-        return holidayResponse.Select(x => x.Convert());
+        var classes = await GetClasses(2022);
+        var teachers = await GetTeachers();
+
+        var students = File.ReadLines("CSV/students.csv")
+            .Skip(1)
+            .Select(x => x.Split(";"))
+            .Select(student => new Student()
+            {
+                ClassId = classes.Single(x => x.Name == student[0].ToUpper()).Id,
+                ClassTeacherId = teachers.Single(x => $"{x.FirstName} {x.LastName}" == student[1]).Id,
+                LastName = student[2],
+                FirstName = student[3],
+                Email = student[4]
+            }
+            )
+            .ToList();
+        return students;
     }
 
     private async Task<TResponse> JsonRpcRequest<TResponse>(

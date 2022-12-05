@@ -45,7 +45,7 @@ public class WebUntisService
     public async Task<IEnumerable<Teacher>> GetTeachers()
     {
         var webUntisClient = await GetWebUntisClient();
-        var teachers = webUntisClient.GetTeachers();
+        var teachers = await webUntisClient.GetTeachers();
         return teachers;
     }
 
@@ -54,6 +54,13 @@ public class WebUntisService
         var webUntisClient = await GetWebUntisClient();
         var homeworks = await webUntisClient.GetHomeworks(from, to);
         return homeworks;
+    }
+
+    public async Task<IEnumerable<Student>> GetStudents()
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var students = await webUntisClient.GetStudents();
+        return students;
     }
 
     private class WebUntisCredentials
