@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Core.Backend.Secure.Auth;
+using Core.AuthLib;
 using Core.WebUntis.Implementation;
 using Core.WebUntis.Interface.Types;
 
@@ -28,7 +28,7 @@ public class WebUntisService
 
     private WebUntisCredentials GetWebUntisCredentials(ClaimsPrincipal user)
     {
-        var guid = new Guid(user.GetUUID());
+        var guid = user.GetUUID();
 
         var secret = _credService.GetWebUntisSecret(guid);
 
