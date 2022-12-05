@@ -49,6 +49,12 @@ public class WebUntisService
         return teachers;
     }
 
+    public async Task<List<Subject>> GetSubject()
+    {
+        var webUntisClient = await GetWebUntisClient();
+        return await webUntisClient.GetSubjects();
+    }
+
     private class WebUntisCredentials
     {
         public string Username = null!;

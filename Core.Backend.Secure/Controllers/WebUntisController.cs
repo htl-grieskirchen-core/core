@@ -22,5 +22,12 @@ public class WebUntisController : ControllerBase
         return teachers;
     }
 
+    [HttpGet("Subjects")]
+    public async Task<List<Subject>> GetSubjects()
+    {
+        return await _webUntisService.GetSubject();
+    }
+
+
     //[Authorize(Policy = "Auth-Token")]
 }
