@@ -7,7 +7,6 @@ namespace Core.Backend.Secure.Services;
 
 public class WebUntisService
 {
-
     private readonly CredService _credService;
 
     public WebUntisService(CredService credService)
@@ -23,6 +22,7 @@ public class WebUntisService
             var webUntisCredentials = GetWebUntisCredentials(user);
             await webUntisClient.AuthenticateWithSecret(webUntisCredentials.Username, webUntisCredentials.Secret);
         }
+
         return webUntisClient;
     }
 
@@ -42,11 +42,18 @@ public class WebUntisService
         };
     }
 
-    public async Task<List<Teacher>> GetTeachers()
+    public async Task<IEnumerable<Teacher>> GetTeachers()
     {
         var webUntisClient = await GetWebUntisClient();
         var teachers = webUntisClient.GetTeachers();
         return teachers;
+    }
+
+    public async Task<IEnumerable<Homework>> GetHomeworks(DateTime from, DateTime to)
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var homeworks = await webUntisClient.GetHomeworks(from, to);
+        return homeworks;
     }
 
     private class WebUntisCredentials
@@ -55,5 +62,7 @@ public class WebUntisService
         public string Secret = null!;
     }
 
-    private class NoSecretException : Exception { }
+    private class NoSecretException : Exception
+    {
+    }
 }

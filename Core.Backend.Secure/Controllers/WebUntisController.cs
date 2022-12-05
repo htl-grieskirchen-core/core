@@ -16,7 +16,7 @@ public class WebUntisController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<List<Teacher>> GetTeachers()
+    public async Task<IEnumerable<Teacher>> GetTeachers()
     {
         var teachers = await _webUntisService.GetTeachers();
         return teachers;

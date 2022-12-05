@@ -45,7 +45,7 @@ public class WebUntisClient : IWebUntisClient
             AddToken(token);
         }
 
-        var handler = new HttpClientHandler { CookieContainer = _cookies };
+        var handler = new HttpClientHandler {CookieContainer = _cookies};
         _httpClient = new HttpClient(handler);
     }
 
@@ -64,7 +64,8 @@ public class WebUntisClient : IWebUntisClient
                 Password = password,
                 Client = _client
             },
-            new Dictionary<string, string> {
+            new Dictionary<string, string>
+            {
                 {"school", _school}
             }
         );
@@ -84,9 +85,12 @@ public class WebUntisClient : IWebUntisClient
             BaseUrlJsonRpcIntern,
             GetJsonRpcRequestContent(
                 "getUserData2017",
-                new object[] {
-                    new AuthenticateWithSecretRequest {
-                        Auth = new AuthenticateWithSecretRequestAuth {
+                new object[]
+                {
+                    new AuthenticateWithSecretRequest
+                    {
+                        Auth = new AuthenticateWithSecretRequestAuth
+                        {
                             ClientTime = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
                             User = user,
                             Otp = otp.ToString()
@@ -94,7 +98,8 @@ public class WebUntisClient : IWebUntisClient
                     }
                 }
             ),
-            new Dictionary<string, string> {
+            new Dictionary<string, string>
+            {
                 {"school", _school}
             }
         );
@@ -109,44 +114,42 @@ public class WebUntisClient : IWebUntisClient
         return authentication;
     }
 
-    public async Task<List<Class>> GetClasses(int schoolYear)
+    public async Task<IEnumerable<Class>> GetClasses(int schoolYear)
     {
         var classesResponse = await JsonRpcRequest<ClassResponse[]>(
             "getKlassen",
             null,
-            new Dictionary<string, string> {
+            new Dictionary<string, string>
+            {
                 {"schoolYear", schoolYear.ToString()}
             }
         );
         return classesResponse
-            .Select(x => x.Convert())
-            .ToList();
+            .Select(x => x.Convert());
     }
 
-    public async Task<List<Room>> GetRooms()
+    public async Task<IEnumerable<Room>> GetRooms()
     {
         var roomsResponse = await JsonRpcRequest<RoomResponse[]>(
             "getRooms"
         );
         return roomsResponse
-            .Select(x => x.Convert())
-            .ToList();
+            .Select(x => x.Convert());
     }
 
-    public List<Teacher> GetTeachers()
+    public IEnumerable<Teacher> GetTeachers()
     {
         var teachers = File.ReadLines("CSV/teachers.csv")
             .Skip(1)
             .Select(x => x.Split(";"))
             .Select(x => new Teacher
-            {
-                Id = Int32.Parse(x[0]),
-                Name = x[1],
-                LastName = x[2],
-                FirstName = x[3]
-            }
-            )
-            .ToList();
+                {
+                    Id = Int32.Parse(x[0]),
+                    Name = x[1],
+                    LastName = x[2],
+                    FirstName = x[3]
+                }
+            );
         return teachers;
     }
 
@@ -155,7 +158,8 @@ public class WebUntisClient : IWebUntisClient
         var homeworkResponse = await RestRequest<HomeworkResponse>(
             method: HttpMethod.Get,
             path: $"/homeworks/lessons",
-            urlParameters: new Dictionary<string, string> {
+            urlParameters: new Dictionary<string, string>
+            {
                 {"startDate", UntisDateTimeMethods.ConvertDateToUntisDate(startDate).ToString()},
                 {"endDate", UntisDateTimeMethods.ConvertDateToUntisDate(endDate).ToString()}
             }
@@ -171,50 +175,48 @@ public class WebUntisClient : IWebUntisClient
         return holidayResponse.Select(x => x.Convert());
     }
 
-    public async Task<List<Subject>> GetSubjects() //shows every subject from arche.webuntis.com
+    public async Task<IEnumerable<Subject>> GetSubjects() //shows every subject from arche.webuntis.com
     {
         var subjectResponse = await JsonRpcRequest<SubjectResponse[]>("getSubjects");
         return subjectResponse
-            .Select(x => x.Convert())
-            .ToList();
+            .Select(x => x.Convert());
     }
 
-    public async Task<List<Timetable>> GetTimetable(ElementType type, int? personId, DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<Timetable>> GetTimetable(ElementType type, int? personId, DateTime startDate,
+        DateTime endDate)
     {
-
         var timetableResponse = await JsonRpcRequest<TimetableResponse[]>("getTimetable",
             new TimetableRequest
             {
-                Type = (int)type,
+                Type = (int) type,
                 Id = personId,
                 StartDate = UntisDateTimeMethods.ConvertDateToUntisDate(startDate),
                 EndDate = UntisDateTimeMethods.ConvertDateToUntisDate(endDate)
             },
             new Dictionary<string, string>
             {
-                { "school", _school }
+                {"school", _school}
             });
-        return timetableResponse.Select(x => x.Convert())
-            .ToList();
+        return timetableResponse.Select(x => x.Convert());
     }
 
     [Obsolete]
-    public Task<List<ExamType>> GetExamTypes()
+    public Task<IEnumerable<ExamType>> GetExamTypes()
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<Exam>> GetExams(int examTypeId, DateTime startDate, DateTime endDate)
+    public Task<IEnumerable<Exam>> GetExams(int examTypeId, DateTime startDate, DateTime endDate)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<List<Student>> GetStudents()
+    public async Task<IEnumerable<Student>> GetStudents()
     {
         var holidayResponse = await JsonRpcRequest<StudentResponse[]>(
             method: "getStudents"
         );
-        return holidayResponse.Select(x => x.Convert()).ToList();
+        return holidayResponse.Select(x => x.Convert());
     }
 
     private async Task<TResponse> JsonRpcRequest<TResponse>(
