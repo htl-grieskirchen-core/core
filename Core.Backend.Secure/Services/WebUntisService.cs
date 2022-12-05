@@ -49,18 +49,25 @@ public class WebUntisService
         return teachers;
     }
 
-    public async Task<IEnumerable<Homework>> GetHomeworks(DateTime from, DateTime to)
-    {
-        var webUntisClient = await GetWebUntisClient();
-        var homeworks = await webUntisClient.GetHomeworks(from, to);
-        return homeworks;
-    }
-
     public async Task<IEnumerable<Student>> GetStudents()
     {
         var webUntisClient = await GetWebUntisClient();
         var students = await webUntisClient.GetStudents();
         return students;
+    }
+
+    public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var homeworks = await webUntisClient.GetHomeworks(startDate, endDate);
+        return homeworks;
+    }
+
+    public async Task<IEnumerable<Holiday>> GetHolidays()
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var holidays = await webUntisClient.GetHolidays();
+        return holidays;
     }
 
     private class WebUntisCredentials

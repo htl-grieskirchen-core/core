@@ -29,5 +29,19 @@ public class WebUntisController : ControllerBase
         return students;
     }
 
+    [HttpGet("Homeworks")]
+    public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
+    {
+        var homeworks = await _webUntisService.GetHomeworks(startDate, endDate);
+        return homeworks;
+    }
+
+    [HttpGet("Holidays")]
+    public async Task<IEnumerable<Holiday>> GetHolidays()
+    {
+        var holidays = await _webUntisService.GetHolidays();
+        return holidays;
+    }
+
     //[Authorize(Policy = "Auth-Token")]
 }
