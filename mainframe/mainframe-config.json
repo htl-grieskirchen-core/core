@@ -17,7 +17,7 @@
     "login": {
         "url": "http://localhost:4200/login"
     },
-    "navigationFrame": {
+    "navigation": {
         "url": "http://localhost:4201/"
     },
     "secureBackendUrl": "https://localhost:7139"

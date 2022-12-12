@@ -194,10 +194,10 @@
             clearFrameContainer("login-container");
         }
 
-        createPluginFrame(config.navigationFrame.url, "nav-container");
+        createPluginFrame(config.navigation.url, "nav-container");
 
         while (isAuthed) {
-            console.log("Waiting for plugin request");
+            console.log     ("Waiting for plugin request");
             const navData = await waitForMessageFromFrame("nav-container", (data) =>
                true);
 
