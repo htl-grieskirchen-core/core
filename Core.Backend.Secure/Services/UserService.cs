@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using Core.Backend.Secure.Dtos;
 using Core.Database;
 
@@ -8,7 +7,7 @@ public class UserService
 {
     private CoreContext _db;
 
-    public UserService(CoreContext db, IConfiguration conf, RSA rsa)
+    public UserService(CoreContext db)
     {
         _db = db;
     }
