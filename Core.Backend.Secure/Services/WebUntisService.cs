@@ -70,25 +70,25 @@ public class WebUntisService
         return holidays;
     }
 
-    public async Task<List<Subject>> GetSubject()
+    public async Task<IEnumerable<Subject>> GetSubject()
     {
         var webUntisClient = await GetWebUntisClient();
         return await webUntisClient.GetSubjects();
     }
 
-    public async Task<List<Room>> GetRooms()
+    public async Task<IEnumerable<Room>> GetRooms()
     {
         var webUntisClient = await GetWebUntisClient();
         return await webUntisClient.GetRooms();
     }
 
-    public async Task<List<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
     {
         var webUntisClient = await GetWebUntisClient();
         return await webUntisClient.GetTimetable(ElementType.Teacher, personId, startDate, endDate);
     }
 
-    public async Task<List<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
     {
         var webUntisClient = await GetWebUntisClient();
         return await webUntisClient.GetTimetable(ElementType.Student, personId, startDate, endDate);

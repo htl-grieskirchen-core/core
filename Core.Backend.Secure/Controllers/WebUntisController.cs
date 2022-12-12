@@ -44,28 +44,27 @@ public class WebUntisController : ControllerBase
     }
 
     [HttpGet("Subjects")]
-    public async Task<List<Subject>> GetSubjects()
+    public async Task<IEnumerable<Subject>> GetSubjects()
     {
         return await _webUntisService.GetSubject();
     }
 
     [HttpGet("Rooms")]
-    public async Task<List<Room>> GetRooms()
+    public async Task<IEnumerable<Room>> GetRooms()
     {
         return await _webUntisService.GetRooms();
     }
 
     [HttpGet("TeacherTimetable")]
-    public async Task<List<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
     {
         return await _webUntisService.GetTimetableFromTeacher(startDate, endDate, personId);
     }
     [HttpGet("StudentTimetable")]
-    public async Task<List<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
     {
         return await _webUntisService.GetTimetableFromStudent(startDate, endDate, personId);
     }
-
 
     //[Authorize(Policy = "Auth-Token")]
 }
