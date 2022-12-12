@@ -10,7 +10,10 @@
 
 <script>
     function requestData(service) {
-        parent.postMessage(service);
+        parent.postMessage({
+            "method": "msg",
+            "data": service
+        });
     }
     window.addEventListener("message", event => {
         console.log("RECEIVED DATA", event.data);

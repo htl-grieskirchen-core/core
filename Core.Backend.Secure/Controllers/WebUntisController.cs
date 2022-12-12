@@ -15,11 +15,32 @@ public class WebUntisController : ControllerBase
         _webUntisService = webUntisService;
     }
 
-    [HttpGet]
-    public async Task<List<Teacher>> GetTeachers()
+    [HttpGet("Teachers")]
+    public async Task<IEnumerable<Teacher>> GetTeachers()
     {
         var teachers = await _webUntisService.GetTeachers();
         return teachers;
+    }
+
+    [HttpGet("Students")]
+    public async Task<IEnumerable<Student>> GetStudents()
+    {
+        var students = await _webUntisService.GetStudents();
+        return students;
+    }
+
+    [HttpGet("Homeworks")]
+    public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
+    {
+        var homeworks = await _webUntisService.GetHomeworks(startDate, endDate);
+        return homeworks;
+    }
+
+    [HttpGet("Holidays")]
+    public async Task<IEnumerable<Holiday>> GetHolidays()
+    {
+        var holidays = await _webUntisService.GetHolidays();
+        return holidays;
     }
 
     [HttpGet("Subjects")]

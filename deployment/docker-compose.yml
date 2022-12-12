@@ -1,0 +1,70 @@
+﻿version: '3.9'
+
+services:
+  nginx:
+    container_name: core-nginx
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: deployment/nginx/nginx.Dockerfile
+    depends_on:
+      - backend
+      - secure
+    volumes:
+      - ./plugins/web:/data/plugins
+      - ./nginx/mainframe-config.json:/data/mainframe/mainframe-config.json
+    ports:
+      - '80:80'
+    networks:
+      - public
+
+  backend:
+    container_name: core-backend
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: deployment/backend.Dockerfile
+    volumes:
+      - ./plugins/backend:/app/plugins
+      - ./public-keys:/app/keys
+    networks:
+      - public
+      - backend
+
+  backend-database:
+    container_name: core-backend-database
+    restart: unless-stopped
+    image: mariadb:10.10
+    environment:
+      MARIADB_ROOT_PASSWORD: network-security
+    networks:
+      - backend
+
+  secure:
+    container_name: core-secure
+    restart: unless-stopped
+    build:
+      context: ..
+      dockerfile: deployment/backend.secure.Dockerfile
+    environment:
+      ConnectionStrings__Production: "server=secure-database;database=core;user=root;password=network-security"
+      MainframeOrigin: "http://mainframe.core.localhost"
+    volumes:
+      - ./private-keys:/app/keys
+    networks:
+      - public
+      - secure
+
+  secure-database:
+    container_name: core-secure-database
+    restart: unless-stopped
+    image: mariadb:10.9
+    environment:
+      MARIADB_ROOT_PASSWORD: network-security
+    networks:
+      - secure
+
+networks:
+  public:
+  backend:
+  secure:

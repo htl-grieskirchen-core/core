@@ -22,7 +22,8 @@ public class LdapClient : ILdapClient
             SessionOptions =
             {
                 ReferralChasing = ReferralChasingOptions.None
-            }
+            },
+            Timeout = TimeSpan.FromSeconds(5)
         };
         try
         {
@@ -35,6 +36,12 @@ public class LdapClient : ILdapClient
             {
                 throw new InvalidLoginException("Hey Schüler/Lehrer! Deine Anmeldedaten sind falsch!");
             }
+
+            if (ex.Message == "The LDAP server is unavailable.")
+            {
+                throw new LdapNotReachableException("Der LDAP Server ist derzeit nicht erreichbar! Bitte versuche es später noch einmal!");
+            }
+
             throw;
         }
     }

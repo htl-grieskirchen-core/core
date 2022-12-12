@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+</head>
+<body>
+<h1>Login</h1>
+<input name="login1" id="login1">
+<input name="pw" id="pw">
+<button onclick="login(login1.value, pw.value)">Try login</button>
+
+<script>
+    function login(username, password) {
+        parent.postMessage({
+            "method": "login",
+            "data": {
+                "username": username,
+                "password": password
+            }
+        });
+    }
+    window.addEventListener("message", event => {
+        console.log("RECEIVED DATA", event.data);
+    });
+</script>
+
+</body>
+</html>

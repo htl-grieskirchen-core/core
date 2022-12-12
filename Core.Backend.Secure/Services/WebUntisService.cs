@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Core.Backend.Secure.Auth;
+using Core.AuthLib;
 using Core.WebUntis.Implementation;
 using Core.WebUntis.Interface.Types;
 
@@ -7,7 +7,6 @@ namespace Core.Backend.Secure.Services;
 
 public class WebUntisService
 {
-
     private readonly CredService _credService;
 
     public WebUntisService(CredService credService)
@@ -23,12 +22,13 @@ public class WebUntisService
             var webUntisCredentials = GetWebUntisCredentials(user);
             await webUntisClient.AuthenticateWithSecret(webUntisCredentials.Username, webUntisCredentials.Secret);
         }
+
         return webUntisClient;
     }
 
     private WebUntisCredentials GetWebUntisCredentials(ClaimsPrincipal user)
     {
-        var guid = new Guid(user.GetUUID());
+        var guid = user.GetUUID();
 
         var secret = _credService.GetWebUntisSecret(guid);
 
@@ -42,11 +42,32 @@ public class WebUntisService
         };
     }
 
-    public async Task<List<Teacher>> GetTeachers()
+    public async Task<IEnumerable<Teacher>> GetTeachers()
     {
         var webUntisClient = await GetWebUntisClient();
-        var teachers = webUntisClient.GetTeachers();
+        var teachers = await webUntisClient.GetTeachers();
         return teachers;
+    }
+
+    public async Task<IEnumerable<Student>> GetStudents()
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var students = await webUntisClient.GetStudents();
+        return students;
+    }
+
+    public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var homeworks = await webUntisClient.GetHomeworks(startDate, endDate);
+        return homeworks;
+    }
+
+    public async Task<IEnumerable<Holiday>> GetHolidays()
+    {
+        var webUntisClient = await GetWebUntisClient();
+        var holidays = await webUntisClient.GetHolidays();
+        return holidays;
     }
 
     public async Task<List<Subject>> GetSubject()
@@ -80,5 +101,7 @@ public class WebUntisService
         public string Secret = null!;
     }
 
-    private class NoSecretException : Exception { }
+    private class NoSecretException : Exception
+    {
+    }
 }

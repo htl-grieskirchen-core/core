@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-    <title>CORE Mainframe</title>
+    <title>Synopsis</title>
     <style>
         html, body {
             margin: 0;
@@ -9,100 +9,274 @@
             overflow: hidden;
         }
 
-        #navigation {
-            width: 100vw;
+        #login-container {
+            position: absolute;
+        }
+
+        #nav-container {
+            position: absolute;
+        }
+
+        iframe {
             height: 100vh;
-            border: none;
+            width: 100vw;
+            border: 0;
         }
     </style>
 </head>
 <body>
 
-<iframe src="/navigation.html" id="navigation"></iframe>
-
-<div style="position: absolute" id="loaded-plugin">
-
-</div>
+<div id="login-container"></div>
+<div id="nav-container"></div>
+<div id="plugin-container"></div>
 
 <script>
-    const plugins = {
-        "webuntis": {
-            url: "/webuntis.html",
-            permissions: ["webuntis"]
-        },
-        "sokrates": {
-            url: "/sokrates.html",
-            permissions: ["webuntis", "sokrates"]
+    async function loadMainframeConfig() {
+        const response = await fetch("mainframe-config.json");
+        const config = await response.json();
+        console.log("Loaded mainframe config", config);
+        return config;
+    }
+
+    async function checkLoginState(secureBackendUrl) {
+        try {
+            const response = await fetch(secureBackendUrl + "/Auth/IsAuthed", { credentials: "include" });
+            if (response.status === 401)
+                return false;
+            const isAuthed = await response.json();
+            return isAuthed === true;
+        } catch (e) {
+            console.error("Failed to check login state", e);
+            return false;
         }
-    };
+    }
 
-    const navigation = document.getElementById('navigation');
-    const plugin = document.getElementById("loaded-plugin");
-    let pluginIframe = null;
-    let loadedPlugin = null;
+    function createPluginFrame(url, targetDivId) {
+        const loginFrame = document.createElement("iframe");
+        loginFrame.src = url;
+        document.getElementById(targetDivId).appendChild(loginFrame);
+    }
 
-    window.addEventListener("message", event => {
-        console.debug("message", event.data, event.source)
+    function clearFrameContainer(targetDivId) {
+        const targetDiv = document.getElementById(targetDivId);
+        while (targetDiv.firstChild) {
+            targetDiv.removeChild(targetDiv.firstChild);
+        }
+    }
 
-        if (event.source === navigation.contentWindow) {
-            if (typeof event.data.method !== "string") {
-                console.error("Invalid message from navigation", event);
-                return;
-            }
+    function waitForCredentialsFromLogin() {
+        return new Promise(resolve => {
+            const frame = document.getElementById("login-container").firstChild;
+            window.addEventListener("message", (event) => {
+                console.log(event);
+                if (event.source !== frame.contentWindow) {
+                    console.debug("Ignoring message from unknown source", event);
+                    return;
+                }
 
-            switch (event.data.method) {
-                case "loadPlugin":
-                    const loadPlugin = event.data.plugin;
-                    if (typeof loadPlugin !== "string") {
-                        console.error("Invalid message from navigation", event);
-                        return;
-                    }
-                    plugin.innerHTML = '';
+                const data = event.data;
 
-                    if (Object.keys(plugins).includes(loadPlugin)) {
-                        console.log("loading plugin", loadPlugin);
-                        loadedPlugin = plugins[loadPlugin];
-
-                        pluginIframe = document.createElement('iframe');
-                        pluginIframe.src = loadedPlugin.url;
-                        pluginIframe.style.width = "100%";
-                        pluginIframe.style.height = "100%";
-                        pluginIframe.style.border = "none";
-                        plugin.appendChild(pluginIframe);
+                if (data.method === "login") {
+                    if (typeof data.data === "object" &&
+                        typeof data.data.username === "string" &&
+                        typeof data.data.password === "string") {
+                        resolve({ username: data.data.username, password: data.data.password });
                     } else {
-                        console.error("Illegal plugin", loadPlugin);
+                        console.error("Invalid login data", data);
                     }
-                    break;
-                case "container":
-                    if (typeof event.data.x !== "number" || typeof event.data.y !== "number" || typeof event.data.width !== "number" || typeof event.data.height !== "number") {
-                        console.error("Invalid message from navigation", event);
-                        return;
-                    }
+                }
+            });
+        });
+    }
 
-                    plugin.style.left = event.data.x + "px";
-                    plugin.style.top = event.data.y + "px";
-                    plugin.style.width = event.data.width + "px";
-                    plugin.style.height = event.data.height + "px";
-                    break;
-            }
+    function sendErrorMessageToLogin(message) {
+        const frame = document.getElementById("login-container").firstChild;
+        frame.contentWindow.postMessage({ method: "error", data: { message } }, "*");
+    }
+
+    async function executeLogin(secureBackendUrl, username, password) {
+        const response = await fetch(secureBackendUrl + "/Auth/Login", {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({
+                "username": username,
+                "password": password
+            })
+        });
+
+        if (response.status === 200)
+            return true;
+
+        const error = await response.json();
+
+        if (typeof error === "string")
+            throw new Error(error);
+
+        throw new Error("Es ist ein unbekannter Fehler aufgetreten!");
+    }
+
+    async function main() {
+        // TODO: implement loading spinner
+
+        const config = await loadMainframeConfig();
+        let isAuthed = await checkLoginState(config.secureBackendUrl);
+        if (!isAuthed) {
+            createPluginFrame(config.login.url, "login-container");
+            do {
+                const credentials = await waitForCredentialsFromLogin();
+                try {
+                    await executeLogin(config.secureBackendUrl, credentials.username, credentials.password);
+                    isAuthed = true;
+                } catch (e) {
+                    console.error("Failed to login", e);
+                    sendErrorMessageToLogin(e.message);
+                }
+            } while (!isAuthed);
+            clearFrameContainer("login-container");
         }
 
-        if (event.source === pluginIframe?.contentWindow) {
-            if (event.data === "webuntis") {
-                if (loadedPlugin.permissions.includes("webuntis"))
-                    pluginIframe?.contentWindow.postMessage("webuntis data");
-                else
-                    console.error("Plugin does not have permission to access webuntis data");
-            }
+        createPluginFrame(config.navigation.url, "nav-container");
+    }
 
-            if (event.data === "sokrates") {
-                if (loadedPlugin.permissions.includes("sokrates"))
-                    pluginIframe?.contentWindow.postMessage("sokrates data");
-                else
-                    console.error("Plugin does not have permission to access sokrates data");
-            }
-        }
-    })
+    main();
+
+    //   -----------------------------------------------------------
+    //      __                                 ___          _
+    //     / /  ___  __ _  __ _  ___ _   _    / __\___   __| | ___
+    //    / /  / _ \/ _` |/ _` |/ __| | | |  / /  / _ \ / _` |/ _ \
+    //   / /__|  __/ (_| | (_| | (__| |_| | / /__| (_) | (_| |  __/
+    //   \____/\___|\__, |\__,_|\___|\__, | \____/\___/ \__,_|\___|
+    //              |___/            |___/
+    //
+    //                  ENTER AT YOUR OWN RISK
+    //
+    //   -----------------------------------------------------------
+
+    // let plugins;
+    //
+    // loadMainframeConfig().then(config => plugins = config.plugins);
+    //
+    // let loggedIn = false;
+    // fetch('https://localhost:7139/Auth/IsAuthed', {
+    //     method: 'GET',
+    //     credentials: "include"
+    // }).then(response => response.json())
+    //     .then(data => loggedIn = data === true).catch(err => loggedIn = false).then(() => {
+    //     const newIframe = document.createElement("iframe");
+    //     if(loggedIn) {
+    //         newIframe.src = 'navigation.html';
+    //         newIframe.id = "navigation";
+    //     } else {
+    //         newIframe.src = plugins["login"].url;
+    //         newIframe.id = "navigation";
+    //         newIframe.style.width = "90%";
+    //         newIframe.style.height = "90vh";
+    //     }
+    //     iframe.appendChild(newIframe);
+    // })
+    //     .then(()=>{
+    //         const navigation = document.getElementById('navigation');
+    //         const plugin = document.getElementById("loaded-plugin");
+    //         let pluginIframe = null;
+    //         let loadedPlugin = null;
+    //
+    //         window.addEventListener("message", event => {
+    //             console.debug("message", event.data, event.source)
+    //
+    //             if (event.source === navigation.contentWindow) {
+    //                 if (typeof event.data.method !== "string") {
+    //                     console.error("Invalid message from navigation", event);
+    //                     return;
+    //                 }
+    //
+    //                 switch (event.data.method) {
+    //                     case "loadPlugin":
+    //                         const loadPlugin = event.data.plugin;
+    //                         if (typeof loadPlugin !== "string") {
+    //                             console.error("Invalid message from navigation", event);
+    //                             return;
+    //                         }
+    //                         plugin.innerHTML = '';
+    //
+    //                         if (Object.keys(plugins).includes(loadPlugin)) {
+    //                             console.log("loading plugin", loadPlugin);
+    //                             loadedPlugin = plugins[loadPlugin];
+    //
+    //                             pluginIframe = document.createElement('iframe');
+    //                             pluginIframe.src = loadedPlugin.url;
+    //                             pluginIframe.style.width = "100%";
+    //                             pluginIframe.style.height = "100%";
+    //                             pluginIframe.style.border = "none";
+    //                             plugin.appendChild(pluginIframe);
+    //                         } else {
+    //                             console.error("Illegal plugin", loadPlugin);
+    //                         }
+    //                         break;
+    //                     case "container":
+    //                         if (typeof event.data.x !== "number" || typeof event.data.y !== "number" || typeof event.data.width !== "number" || typeof event.data.height !== "number") {
+    //                             console.error("Invalid message from navigation", event);
+    //                             return;
+    //                         }
+    //
+    //                         plugin.style.left = event.data.x + "px";
+    //                         plugin.style.top = event.data.y + "px";
+    //                         plugin.style.width = event.data.width + "px";
+    //                         plugin.style.height = event.data.height + "px";
+    //                         break;
+    //                 }
+    //             }
+    //
+    //             if (event.source === pluginIframe?.contentWindow) {
+    //
+    //                 switch (event.data.method) {
+    //                     case "login":
+    //                         console.log(event.data.data)
+    //
+    //                         fetch('https://localhost:7139/Auth/Login', {
+    //                             method: 'POST',
+    //                             headers: {
+    //                                 'Accept': 'application/json',
+    //                                 'Content-Type': 'application/json',
+    //                             },
+    //                             credentials: "include",
+    //                             body: JSON.stringify({
+    //                                 "username": event.data.data.username,
+    //                                 "password": event.data.data.password
+    //                             }),
+    //                         });
+    //
+    //                         return;
+    //                     case "msg":
+    //                         if (event.data.data === "webuntis") {
+    //                             if (loadedPlugin.permissions.includes("webuntis"))
+    //                                 pluginIframe?.contentWindow.postMessage("webuntis data");
+    //                             else
+    //                                 console.error("Plugin does not have permission to access webuntis data");
+    //                         }
+    //
+    //                         if (event.data.data === "sokrates") {
+    //                             if (loadedPlugin.permissions.includes("sokrates"))
+    //                                 pluginIframe?.contentWindow.postMessage("sokrates data");
+    //                             else
+    //                                 console.error("Plugin does not have permission to access sokrates data");
+    //                         }
+    //
+    //                         if (event.data.data === "login") {
+    //                             if (loadedPlugin.permissions.includes("login"))
+    //                                 pluginIframe?.contentWindow.postMessage("login data");
+    //                             else
+    //                                 console.error("Plugin does not have permission to access sokrates data");
+    //                         }
+    //                         break;
+    //                 }
+    //             }
+    //         })
+    //     });
+
 </script>
 
 </body>

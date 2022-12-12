@@ -21,6 +21,11 @@ public class IDToken : AuthToken
     public string? Email { get; set; }
 
     /// <summary>
+    /// Display Name
+    /// </summary>
+    public string DisplayName { get; set; }
+
+    /// <summary>
     /// matrikelnummer - nur bei Schülern verfügbar
     /// </summary>
     public string? MatriculationNumber { get; set; }

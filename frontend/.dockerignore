@@ -1,0 +1,9 @@
+.angular
+.dockerignore
+.editorconfig
+.gitignore
+.vscode
+README.md
+node_modules
+tmp
+yarn-error.log

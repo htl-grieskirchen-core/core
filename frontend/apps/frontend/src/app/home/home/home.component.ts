@@ -1,4 +1,8 @@
-import { Component, OnInit } from "@angular/core";
+import {Component, OnInit} from "@angular/core";
+import {
+  IDTokenPayload,
+  MainframeIdTokenService
+} from "../../../../../../libs/mainframe-connector/src/lib/mainframe-id-token.service";
 
 @Component({
   selector: "app-home",
@@ -6,9 +10,12 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./home.component.css"],
 })
 export class HomeComponent implements OnInit {
-  constructor() {}
+  constructor(private service: MainframeIdTokenService) {
+  }
+
+  jwtPayload: IDTokenPayload | undefined;
 
   ngOnInit(): void {
-    console.log('wos is des für dumme regel')
+    this.jwtPayload = this.service.decodeJwt(this.service.getJwt());
   }
 }

@@ -794,3 +794,6 @@ modules.xml
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,visualstudio,visualstudiocode,jetbrains+all,jetbrains+iml,yarn,angular
+
+# irgendsowos vo macOS
+.DS_Store
