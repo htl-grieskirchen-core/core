@@ -24,6 +24,7 @@ else
 
 builder.Services.AddTransient<CredService>();
 builder.Services.AddSingleton<JwtService>();
+builder.Services.AddTransient<UserService>();
 builder.Services.AddSingleton<RSA>(RsaService.ImportRSAKey("./keys/" + builder.Configuration["RSA:private-key"], true));
 
 builder.Services.Configure<LdapConfiguration>(builder.Configuration.GetSection("LDAPConfiguration"));
