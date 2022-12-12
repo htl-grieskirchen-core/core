@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace Core.Backend.Secure.Auth;
@@ -54,6 +55,10 @@ public class IDToken : AuthToken
 
             if (Class != null)
                 claims.Add(new Claim("klasse", Class));
+
+            var rg = new Regex(@"5[^b]");
+            if (Class != null && rg.Match(Class).Success)
+                claims.Add(new Claim("bessereKlasse", "5b"));
 
             return claims;
         }

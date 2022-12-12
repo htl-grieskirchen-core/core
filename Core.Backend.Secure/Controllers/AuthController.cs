@@ -1,8 +1,6 @@
-using System.Text.RegularExpressions;
 using Core.AuthLib;
 using Core.Backend.Secure.Auth;
 using Core.Backend.Secure.Services;
-using Core.Database;
 using Core.Ldap.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,27 +13,22 @@ namespace Core.Backend.Secure.Controllers;
 public class AuthController : ControllerBase
 {
     private JwtService _jwtService;
-    private CoreContext _db;
-    private ILdapClient _ldap;
     private IConfiguration _conf;
+    private AuthService _authService;
 
-    public AuthController(JwtService jwt, CoreContext db, ILdapClient ldap, IConfiguration conf)
+    public AuthController(JwtService jwt, IConfiguration conf, AuthService auth)
     {
         _jwtService = jwt;
-        _db = db;
-        _ldap = ldap;
         _conf = conf;
+        _authService = auth;
     }
 
     [Authorize(Policy = "Auth-Token")]
     [HttpGet]
     public string GetIdToken()
     {
-        var user = _db.Users.FirstOrDefault(x => x.UUID == User.GetUUID());
-
-        var obj = _db.StoredUserTokens.First(x => x.UserUUID == user.UUID);
-        var connectedPlatforms = obj.GetType().GetProperties().Where(x => x.Name != "UserUUID" && x.Name != "User")
-            .Where(x => x.GetValue(obj, null) is not null).Select(x => x.Name).ToList();
+        var user = _authService.GetUser(User.GetUUID());
+        var connectedPlatforms = _authService.GetPlatforms(user);
 
         return _jwtService.GenerateToken(new IDToken()
         {
@@ -53,17 +46,16 @@ public class AuthController : ControllerBase
     public IActionResult Login(SignInParams signInParams)
     {
         SignInResult signInResult;
-
         try
         {
-            signInResult = _ldap.SignIn(signInParams);
+            signInResult = _authService.SignIn(signInParams);
         }
-        catch (Exception e) when (e is InvalidLoginException or LdapNotReachableException)
+        catch (Exception e)
         {
             return BadRequest(e.Message);
         }
 
-        var user = UpdateUserInDB(signInResult);
+        var user = _authService.UpdateUserInDB(signInResult);
 
         DateTime valid = _conf["JWT:Auth-Token-Expiration-Unit"] == "days"
             ? DateTime.Now.AddDays(Convert.ToInt32(_conf["JWT:Auth-Token-Expiration"]))
@@ -86,51 +78,6 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Append("auth", token, cookie);
         return Ok();
-    }
-
-    [NonAction]
-    public User UpdateUserInDB(SignInResult signInResult)
-    {
-        string? mnr = null;
-        if (signInResult.User.OrganizationUnit.Equals(LdapGroup.Schueler))
-        {
-            var rg = new Regex(@"\d{6}");
-            var mr = rg.Match(signInResult.User.LoginName);
-
-            if (!mr.Success)
-            {
-                throw new Exception("Matriculation number not found");
-            }
-
-            mnr = mr.Value;
-        }
-
-        var user = _db.Users.FirstOrDefault(x => x.SchoolEmail == signInResult.User.Email);
-        if (user is null)
-        {
-            user = _db.Users.Add(new User
-            {
-                SchoolEmail = signInResult.User.Email,
-                StoredUserTokens = new StoredUserTokens(),
-                Class = signInResult.User.Class,
-                Role = signInResult.User.OrganizationUnit,
-                Username = signInResult.User.LoginName,
-                DisplayName = signInResult.User.DisplayName,
-                MatriculationNumber = mnr
-            }).Entity;
-        }
-        else
-        {
-            user.SchoolEmail = signInResult.User.Email;
-            user.Class = signInResult.User.Class;
-            user.Role = signInResult.User.OrganizationUnit;
-            user.Username = signInResult.User.LoginName;
-            user.DisplayName = signInResult.User.DisplayName;
-            user.MatriculationNumber = mnr;
-        }
-
-        _db.SaveChanges();
-        return user;
     }
 
     [Authorize]
