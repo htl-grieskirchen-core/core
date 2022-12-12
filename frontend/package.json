@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "nx",
-    "start": "nx serve",
+    "start-old": "nx serve",
     "build": "nx build",
     "watch": "nx build --watch --configuration development",
     "test": "nx test",
     "lint": "nx lint",
-    "postinstall": "node ./decorate-angular-cli.js"
+    "postinstall": "node ./decorate-angular-cli.js",
+    "start": "nx run-many --target=serve"
   },
   "private": true,
   "dependencies": {
