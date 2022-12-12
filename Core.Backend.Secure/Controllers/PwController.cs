@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Core.Backend.Secure.Controllers;
 
+[Authorize(Policy = "Auth-Token")]
 [ApiController]
 [Route("[controller]/[action]")]
 public class PwController : ControllerBase
@@ -15,7 +16,6 @@ public class PwController : ControllerBase
 
     public PwController(CredService cred) => _cred = cred;
 
-    [Authorize(Policy = "Auth-Token")]
     [HttpPost("MoodleToken")]
     public ActionResult SetEduvidualToken([FromBody] string token)
     {
@@ -30,7 +30,6 @@ public class PwController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "Auth-Token")]
     [HttpPost("WebuntisToken")]
     public ActionResult SetWebuntisToken([FromBody] string token)
     {
@@ -45,7 +44,6 @@ public class PwController : ControllerBase
         }
     }
 
-    [Authorize(Policy = "Auth-Token")]
     [HttpPost("LDAP")]
     public ActionResult SaveLdapPassword([FromBody] LdapUserDto ldapUserDto)
     {
