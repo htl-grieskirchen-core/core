@@ -52,9 +52,9 @@
     }
 
     function createPluginFrame(url, targetDivId) {
-        const loginFrame = document.createElement("iframe");
-        loginFrame.src = url;
-        document.getElementById(targetDivId).appendChild(loginFrame);
+        const newFrame = document.createElement("iframe");
+        newFrame.src = url;
+        document.getElementById(targetDivId).appendChild(newFrame);
     }
 
     function clearFrameContainer(targetDivId) {
@@ -68,7 +68,6 @@
         return new Promise(resolve => {
             const frame = document.getElementById(containerId).firstChild;
             window.addEventListener("message", function (event) {
-                console.log(event);
                 if (event.source !== frame.contentWindow) {
                     console.debug("Ignoring message from unknown source", event);
                     return;
@@ -102,6 +101,11 @@
         frame.contentWindow.postMessage({method: "error", data: {message}}, "*");
     }
 
+    function sendMessageToFrame(container, method, message) {
+        const frame = document.getElementById(container).firstChild;
+        frame.contentWindow.postMessage({method: method, data: message}, "*");
+    }
+
     async function executeLogin(secureBackendUrl, username, password) {
         const response = await fetch(secureBackendUrl + "/Auth/Login", {
             method: "POST",
@@ -118,6 +122,49 @@
 
         if (response.status === 200)
             return true;
+
+        const error = await response.json();
+
+        if (typeof error === "string")
+            throw new Error(error);
+
+        throw new Error("Es ist ein unbekannter Fehler aufgetreten!");
+    }
+
+    async function Post(secureBackendUrl, requestPath, body) {
+        const response = await fetch(secureBackendUrl + requestPath, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify(body)
+        });
+
+        if (response.status === 200)
+            return await response.json();
+
+        const error = await response.json();
+
+        if (typeof error === "string")
+            throw new Error(error);
+
+        throw new Error("Es ist ein unbekannter Fehler aufgetreten!");
+    }
+
+    async function Get(secureBackendUrl, requestPath, body) {
+        const response = await fetch(secureBackendUrl + requestPath, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            credentials: "include"
+        });
+
+        if (response.status === 200)
+            return await response.json();
 
         const error = await response.json();
 
@@ -147,15 +194,28 @@
             clearFrameContainer("login-container");
         }
 
-        createPluginFrame(config.navigation.url, "nav-container");
+        createPluginFrame(config.navigationFrame.url, "nav-container");
 
-        while (true) {
+        while (isAuthed) {
+            console.log("Waiting for plugin request");
             const navData = await waitForMessageFromFrame("nav-container", (data) =>
-                typeof data.method === "string" &&
-                typeof data.pluginId === "string" &&
-                data.method === "loadPlugin");
+               true);
+
+            /*
+             typeof data.method === "string" &&
+                typeof data.pluginId === "string"
+             */
+            /*switch (navData.pluginId) {
+                case "navigate": doNavigateStuff(navData); break;
+            }*/
+
+            switch (navData.method) {
+                case "getIDToken":
+                    sendMessageToFrame("nav-container", "getIDToken", await Get(config.secureBackendUrl, "/Auth/GetIDToken"));
+            }
+
             clearFrameContainer("plugin-container");
-            createPluginFrame(config[navData.pluginId].url, "plugin-container");
+            //createPluginFrame(config[navData.pluginId].url, "plugin-container");
         }
     }
 
