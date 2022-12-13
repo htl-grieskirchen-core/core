@@ -13,11 +13,11 @@ Core.Backend/Pluginloader.cs @Klausmd5
 Core.Backend.Secure          @Klausmd5
 
 deployment                   @profiluefter
-mainframe                    @profiluefter
+mainframe                    @profiluefter @Klausmd5
 
-Core.Backend.Secure/Services/RsaService.cs @Klausmd5
-Core.Backend.Secure/Services/JwtService.cs @Klausmd5
-Core.Backend.Secure/Services/CredService.cs @Klausmd5
+Core.AuthLib                                 @Klausmd5
+Core.AuthLib/Services/RsaService.cs          @Klausmd5
+Core.Backend.Secure/Services                 @Klausmd5
 
 # backend 2
 Core.Moodle.Implementation  @EinboeckFranz
