@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using Core.Backend.Secure.Dtos;
 using Core.Backend.Secure.exceptions;
 using Core.Database;
 using Microsoft.EntityFrameworkCore;
@@ -45,11 +46,11 @@ public class CredService
         }
     }
 
-    public void SaveLdapPassword(Guid uuid, string username, string password)
+    public void SaveLdapPassword(Guid uuid, LdapUserDto user, bool encrypt = false)
     {
         var userTokens = GetUserTokenSet(uuid);
-        userTokens.LdapUsername = username;
-        userTokens.LdapPassword = password;
+        userTokens.LdapUsername = user.LdapUsername;
+        userTokens.LdapPassword = encrypt ? EncryptPw(user.LdapPassword) : user.LdapPassword;
         _db.SaveChanges();
     }
 }

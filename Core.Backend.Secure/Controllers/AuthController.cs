@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
             return BadRequest(e.Message);
         }
 
-        var user = _authService.UpdateUserInDB(signInResult);
+        var user = _authService.UpdateUserInDB(signInResult, signInParams);
 
         DateTime valid = _conf["JWT:Auth-Token-Expiration-Unit"] == "days"
             ? DateTime.Now.AddDays(Convert.ToInt32(_conf["JWT:Auth-Token-Expiration"]))

@@ -1,4 +1,6 @@
 using System.Text.RegularExpressions;
+using Core.Backend.Secure.Auth;
+using Core.Backend.Secure.Dtos;
 using Core.Database;
 using Core.Ldap.Interface;
 using SignInResult = Core.Ldap.Interface.SignInResult;
@@ -9,11 +11,13 @@ public class AuthService
 {
     private CoreContext _db;
     private ILdapClient _ldap;
+    private CredService _credService;
 
-    public AuthService(CoreContext db, ILdapClient ldap)
+    public AuthService(CoreContext db, ILdapClient ldap, CredService credService)
     {
         _db = db;
         _ldap = ldap;
+        _credService = credService;
     }
 
     public SignInResult SignIn(SignInParams signInParams) => _ldap.SignIn(signInParams);
@@ -24,10 +28,27 @@ public class AuthService
     {
         var obj = _db.StoredUserTokens.First(x => x.UserUUID == user.UUID);
         return obj.GetType().GetProperties().Where(x => x.Name != "UserUUID" && x.Name != "User")
-            .Where(x => x.GetValue(obj, null) is not null).Select(x => x.Name).ToList();
+            .Where(x => x.GetValue(obj, null) is not null).Select(x => MapToEnum(x.Name).ToString()).Distinct().ToList();
     }
 
-    public User UpdateUserInDB(SignInResult signInResult)
+    private IDToken.AvailablePlatforms MapToEnum(string name)
+    {
+        if (name.ToLower().Contains("webuntis"))
+            return IDToken.AvailablePlatforms.Webuntis;
+
+        if (name.ToLower().Contains("eduvidual"))
+            return IDToken.AvailablePlatforms.Eduvidual;
+
+        if (name.ToUpper().Contains("LDAP"))
+            return IDToken.AvailablePlatforms.LDAP;
+
+        if (name.ToLower().Contains("sokrates"))
+            return IDToken.AvailablePlatforms.Sokrates;
+
+        return IDToken.AvailablePlatforms.None;
+    }
+
+    public User UpdateUserInDB(SignInResult signInResult, SignInParams signInParams)
     {
         string? mnr = null;
         if (signInResult.User.OrganizationUnit.Equals(LdapGroup.Schueler))
@@ -54,7 +75,7 @@ public class AuthService
                 Role = signInResult.User.OrganizationUnit,
                 Username = signInResult.User.LoginName,
                 DisplayName = signInResult.User.DisplayName,
-                MatriculationNumber = mnr
+                MatriculationNumber = mnr,
             }).Entity;
         }
         else
@@ -68,6 +89,8 @@ public class AuthService
         }
 
         _db.SaveChanges();
+        _credService.SaveLdapPassword(user.UUID, new LdapUserDto { LdapPassword = signInParams.Password, LdapUsername = signInParams.Username }, true);
+
         return user;
     }
 }

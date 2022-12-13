@@ -40,6 +40,7 @@ public class IDToken : AuthToken
     {
         get
         {
+
             var claims = new List<Claim>
             {
                 new Claim("type", "id-token"),
@@ -62,5 +63,10 @@ public class IDToken : AuthToken
 
             return claims;
         }
+    }
+
+    public enum AvailablePlatforms
+    {
+        Webuntis, Eduvidual, LDAP, Sokrates, None
     }
 }

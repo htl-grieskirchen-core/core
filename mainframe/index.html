@@ -131,36 +131,15 @@
         throw new Error("Es ist ein unbekannter Fehler aufgetreten!");
     }
 
-    async function Post(secureBackendUrl, requestPath, body) {
+    async function fetch2(secureBackendUrl, requestPath,method, body = undefined) {
         const response = await fetch(secureBackendUrl + requestPath, {
-            method: "POST",
+            method: method,
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
             credentials: "include",
-            body: JSON.stringify(body)
-        });
-
-        if (response.status === 200)
-            return await response.json();
-
-        const error = await response.json();
-
-        if (typeof error === "string")
-            throw new Error(error);
-
-        throw new Error("Es ist ein unbekannter Fehler aufgetreten!");
-    }
-
-    async function Get(secureBackendUrl, requestPath, body) {
-        const response = await fetch(secureBackendUrl + requestPath, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            credentials: "include"
+            body: body === undefined ? undefined : JSON.stringify(body)
         });
 
         if (response.status === 200)
@@ -211,7 +190,7 @@
 
             switch (navData.method) {
                 case "getIDToken":
-                    sendMessageToFrame("nav-container", "getIDToken", await Get(config.secureBackendUrl, "/Auth/GetIDToken"));
+                    sendMessageToFrame("nav-container", "getIDToken", await fetch2(config.secureBackendUrl, "/Auth/GetIDToken", "GET"));
             }
 
             clearFrameContainer("plugin-container");

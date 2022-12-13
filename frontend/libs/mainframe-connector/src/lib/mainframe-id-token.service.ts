@@ -11,8 +11,7 @@ export class MainframeIdTokenService {
 
   public getJwt(): Promise<string> {
     parent.postMessage({
-      method: "getIDToken",
-      pluginId: "navigation",
+      method: "getIDToken"
     }, "*");
 
     const promise = new Promise<string>((resolve) => {
