@@ -177,8 +177,7 @@
 
         while (isAuthed) {
             console.log     ("Waiting for plugin request");
-            const navData = await waitForMessageFromFrame("nav-container", (data) =>
-               true);
+            const navData = await waitForMessageFromFrame("nav-container", (data) => typeof data.method === "string");
 
             /*
              typeof data.method === "string" &&
