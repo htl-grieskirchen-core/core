@@ -16,7 +16,7 @@ public class PwController : ControllerBase
 
     public PwController(CredService cred) => _cred = cred;
 
-    [HttpPost]
+    [HttpPost("MoodleToken")]
     public ActionResult SetEduvidualToken([FromBody] string token)
     {
         try
@@ -30,7 +30,7 @@ public class PwController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("WebuntisToken")]
     public ActionResult SetWebuntisToken([FromBody] string token)
     {
         try
@@ -44,12 +44,12 @@ public class PwController : ControllerBase
         }
     }
 
-    [HttpPost]
+    [HttpPost("LDAP")]
     public ActionResult SaveLdapPassword([FromBody] LdapUserDto ldapUserDto)
     {
         try
         {
-            _cred.SaveLdapPassword(User.GetUUID(), ldapUserDto);
+            _cred.SaveLdapPassword(User.GetUUID(), ldapUserDto.LdapUsername, ldapUserDto.LdapPassword);
             return Ok();
         }
         catch (AuthException e)

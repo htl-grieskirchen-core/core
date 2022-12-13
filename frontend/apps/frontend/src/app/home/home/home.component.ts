@@ -16,8 +16,6 @@ export class HomeComponent implements OnInit {
   jwtPayload: IDTokenPayload | undefined;
 
   ngOnInit(): void {
-    this.service.getJwt().then(jwt=>{
-      this.jwtPayload = this.service.decodeJwt(jwt);
-    });
+    this.jwtPayload = this.service.decodeJwt(this.service.getJwt());
   }
 }
