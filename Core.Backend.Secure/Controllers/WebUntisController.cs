@@ -55,6 +55,7 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetRooms(User);
     }
 
+    [Obsolete("SIMON")]
     [HttpGet("TeacherTimetable")]
     public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate,
         int? personId)
@@ -62,6 +63,7 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetTimetableFromTeacher(User, startDate, endDate, personId);
     }
 
+    [Obsolete("SIMON")]
     [HttpGet("StudentTimetable")]
     public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate,
         int? personId)
@@ -69,10 +71,11 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetTimetableFromStudent(User, startDate, endDate, personId);
     }
 
+    [Obsolete("SIMON")]
     [HttpGet("StudentSubstitutionTimetable")]
     public async Task<IEnumerable<Timetable>> GetSubstitutionsFromStudent(DateTime startDate, DateTime endDate, int? personId)
     {
-        return await _webUntisService.GetSubstitutionsFromStudent(startDate, endDate, personId);
+        return await _webUntisService.GetSubstitutionsFromStudent(User, startDate, endDate, personId);
     }
     //[Authorize(Policy = "Auth-Token")]
 }

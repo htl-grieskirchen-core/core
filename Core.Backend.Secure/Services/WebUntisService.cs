@@ -96,10 +96,10 @@ public class WebUntisService
         return await webUntisClient.GetTimetable(ElementType.Student, personId, startDate, endDate);
     }
 
-    public async Task<IEnumerable<Timetable>> GetSubstitutionsFromStudent(DateTime startDate, DateTime endDate,
+    public async Task<IEnumerable<Timetable>> GetSubstitutionsFromStudent(ClaimsPrincipal user, DateTime startDate, DateTime endDate,
         int? personId)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         var items = await webUntisClient.GetTimetable(ElementType.Student, personId, startDate, endDate);
         return items.Where(x => x.SubstitutionText == "Supplierung");
     }
