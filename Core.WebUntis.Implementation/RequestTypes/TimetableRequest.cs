@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Core.WebUntis.Interface.Types;
 
 namespace Core.WebUntis.Implementation.RequestTypes;
 

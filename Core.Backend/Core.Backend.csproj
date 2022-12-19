@@ -18,12 +18,18 @@
     <ItemGroup>
       <ProjectReference Include="..\Core.AuthLib\Core.AuthLib.csproj" />
       <ProjectReference Include="..\Core.Plugin.Interface\Core.Plugin.Interface.csproj" />
+      <ProjectReference Include="..\Core.WebUntis.Implementation\Core.WebUntis.Implementation.csproj" />
+      <ProjectReference Include="..\Core.WebUntis.Interface\Core.WebUntis.Interface.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <None Update="keys\dev-public-key.pem">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Controllers\WebUntisController.cs" />
     </ItemGroup>
 
 </Project>
