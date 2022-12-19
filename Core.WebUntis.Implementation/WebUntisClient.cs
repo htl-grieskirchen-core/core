@@ -182,13 +182,11 @@ public class WebUntisClient : IWebUntisClient
         DateTime endDate)
     {
         var timetableResponse = await JsonRpcRequest<TimetableResponse[]>("getTimetable",
-            new TimetableRequest
-            {
-                Type = (int)type,
-                Id = personId,
-                StartDate = UntisDateTimeMethods.ConvertDateToUntisDate(startDate),
-                EndDate = UntisDateTimeMethods.ConvertDateToUntisDate(endDate)
-            },
+            new TimetableRequest(
+                personId ?? 0,
+                (int)type,
+                UntisDateTimeMethods.ConvertDateToUntisDate(startDate),
+                UntisDateTimeMethods.ConvertDateToUntisDate(endDate)),
             new Dictionary<string, string>
             {
                 {"school", _school}

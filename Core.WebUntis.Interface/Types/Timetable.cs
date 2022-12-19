@@ -19,6 +19,8 @@ public class Timetable
     public string? StatisticalFlags { get; set; }
     public Code? Code { get; set; }
 
+    public string? SubstitutionText { get; set; }
+
     //public string code { get; set; }
     //public string statflags { get; set; }
 }

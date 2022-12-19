@@ -69,5 +69,10 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetTimetableFromStudent(User, startDate, endDate, personId);
     }
 
+    [HttpGet("StudentSubstitutionTimetable")]
+    public async Task<IEnumerable<Timetable>> GetSubstitutionsFromStudent(DateTime startDate, DateTime endDate, int? personId)
+    {
+        return await _webUntisService.GetSubstitutionsFromStudent(startDate, endDate, personId);
+    }
     //[Authorize(Policy = "Auth-Token")]
 }
