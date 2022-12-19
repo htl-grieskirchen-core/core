@@ -110,15 +110,10 @@ public class WebUntisClient : IWebUntisClient
         return authentication;
     }
 
-    public async Task<IEnumerable<Class>> GetClasses(int schoolYear)
+    public async Task<IEnumerable<Class>> GetClasses()
     {
         var classesResponse = await JsonRpcRequest<ClassResponse[]>(
-            "getKlassen",
-            null,
-            new Dictionary<string, string>
-            {
-                {"schoolYear", schoolYear.ToString()}
-            }
+            "getKlassen"
         );
         return classesResponse
             .Select(x => x.Convert());
@@ -209,7 +204,7 @@ public class WebUntisClient : IWebUntisClient
 
     public async Task<IEnumerable<Student>> GetStudents()
     {
-        var classes = await GetClasses(2022);
+        var classes = await GetClasses();
         var teachers = await GetTeachers();
 
         var students = File.ReadLines("CSV/students.csv")

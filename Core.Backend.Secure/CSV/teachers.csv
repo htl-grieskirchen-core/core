@@ -4,8 +4,8 @@ Id;Name;Nachname;Vorname
 3;ANZEP;Anzenberger;Peter
 4;BAUMA;Baumgartner;Andreas
 5;DOPPJ;Doppelbauer;Josef
-6;EISEH;Eisenköck;Helga
-10;GRUER;Grüneis;Robert
+6;EISEH;Eisenkoeck;Helga
+10;GRUER;Grueneis;Robert
 11;HOCHA;Hochmeir;Andreas
 12;HOEPK;Hoepfler;Karin
 13;HOFMG;Hofmann;Gerlinde
@@ -20,14 +20,14 @@ Id;Name;Nachname;Vorname
 24;MEYRA;Meyrhuber;Andrea
 25;PETSS;Petschl;Sabine
 26;PILGA;Pilger;Andreas
-27;REITJ;Reiter-Frühauf;Julia
+27;REITJ;Reiter-Fruehauf;Julia
 28;RESCK;Resch;Konrad
-29;SCHNE;Schnötzlinger;Eva
+29;SCHNE;Schnoetzlinger;Eva
 31;SPERA;Sperrer;Andreas
 33;STRAS;Straif;Sandra
 37;WENDG;Wendt;Gerhard
 38;WIESC;Wiesinger;Christine
-39;ZWEIW;Zweimüller;Wilfried
+39;ZWEIW;Zweimueller;Wilfried
 41;MAYRL;Mayrhuber;Lukas
 42;MAYRB;Mayr;Bernhard
 43;MORIT;Moritz;Thomas
@@ -36,7 +36,7 @@ Id;Name;Nachname;Vorname
 49;EGGEB;Egger;Barbara
 50;STRAR;Strassl;Rainer
 51;WELST;Welsch;Torsten
-52;STEIK;Steinböck;Katharina
+52;STEIK;Steinboeck;Katharina
 54;KASBM;Kasbauer;Magdalena
 59;EHRED;Ehrenstorfer;Dieter
 60;HAING;Hainbucher;Gerald
