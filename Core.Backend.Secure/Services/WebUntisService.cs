@@ -33,7 +33,7 @@ public class WebUntisService
         var password = _credService.GetLdapPassword(guid);
 
         if (password == null)
-            throw new NoSecretException();
+            throw new NoLdapPasswordException();
 
         return new WebUntisCredentials
         {
@@ -111,7 +111,7 @@ public class WebUntisService
         public string Password = null!;
     }
 
-    private class NoSecretException : Exception
+    private class NoLdapPasswordException : Exception
     {
     }
 }
