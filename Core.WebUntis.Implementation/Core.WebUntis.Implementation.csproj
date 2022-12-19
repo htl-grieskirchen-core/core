@@ -10,8 +10,4 @@
         <ProjectReference Include="..\Core.WebUntis.Interface\Core.WebUntis.Interface.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="AspNetCore.Totp" Version="2.3.0" />
-    </ItemGroup>
-
 </Project>

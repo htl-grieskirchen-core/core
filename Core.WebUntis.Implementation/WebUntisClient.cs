@@ -2,7 +2,6 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using AspNetCore.Totp;
 using Core.WebUntis.Implementation.RequestTypes;
 using Core.WebUntis.Implementation.ResponseTypes;
 using Core.WebUntis.Interface;
@@ -70,40 +69,6 @@ public class WebUntisClient : IWebUntisClient
         );
 
         var authentication = authenticateResponse.Convert();
-
-        AddToken(authentication.Token);
-
-        return authentication;
-    }
-
-    [Obsolete]
-    public async Task<Authentication> AuthenticateWithSecret(string user, string secret)
-    {
-        var otp = new TotpGenerator().Generate(secret);
-        await Request(
-            HttpMethod.Post,
-            BaseUrlJsonRpcIntern,
-            GetJsonRpcRequestContent(
-                "getUserData2017",
-                new object[] {
-                    new AuthenticateWithSecretRequest {
-                        Auth = new AuthenticateWithSecretRequestAuth {
-                            ClientTime = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
-                            User = user,
-                            Otp = otp.ToString()
-                        }
-                    }
-                }
-            ),
-            new Dictionary<string, string> {
-                {"school", _school}
-            }
-        );
-
-        var authentication = new Authentication
-        {
-            Token = _cookies.GetCookies(new Uri(BaseUrlJsonRpcIntern))["JSESSIONID"]!.Value
-        };
 
         AddToken(authentication.Token);
 
