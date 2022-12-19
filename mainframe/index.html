@@ -68,6 +68,7 @@
         return new Promise(resolve => {
             const frame = document.getElementById(containerId).firstChild;
             window.addEventListener("message", function (event) {
+
                 if (event.source !== frame.contentWindow) {
                     console.debug("Ignoring message from unknown source", event);
                     return;
@@ -115,8 +116,8 @@
             },
             credentials: "include",
             body: JSON.stringify({
-                "username": username,
-                "password": password
+                "username": username.trim(),
+                "password": password.trim()
             })
         });
 

@@ -1,2 +1,6 @@
 <h1 class="text-4xl font-bold my-5">Stoatseitn</h1>
 JWT: {{jwtPayload | json}}
+<app-category *ngFor="let course of courses"
+              [title]="course.name"
+              [icon]="course.icon"
+              class="w-full"></app-category>

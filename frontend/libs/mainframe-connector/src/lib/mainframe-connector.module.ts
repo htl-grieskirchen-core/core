@@ -12,7 +12,7 @@ import {PluginPlaceholderComponent} from "./plugin-placeholder/plugin-placeholde
     AngularResizeEventModule
   ],
   exports: [
-    PluginPlaceholderComponent
+    PluginPlaceholderComponent,
   ]
 })
 export class MainframeConnectorModule {

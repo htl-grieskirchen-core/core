@@ -1,0 +1,37 @@
+<div id="accordion-flush"
+     class="pb-5"
+     data-accordion="collapse"
+     data-active-classes="bg-white dark:bg-gray-900 dark:text-white"
+     data-inactive-classes="dark:text-gray-400">
+  <h2 id="accordion-flush-heading-1">
+    <button type="button"
+            (click)="hidden = !hidden"
+            class="flex items-center justify-between w-full py-5 font-medium text-left"
+            data-accordion-target="#accordion-flush-body-1" aria-expanded="true" aria-controls="accordion-flush-body-1">
+      <div class="flex gap-2">
+        <img [src]="icon" height="24" width="24">
+        <span>{{title}}</span>
+      </div>
+      <svg *ngIf="!hidden" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <polyline points="6 15 12 9 18 15"></polyline>
+      </svg>
+      <svg *ngIf="hidden" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-down" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+  </h2>
+  <div class="accordion-body overflow-hidden duration-500 transition-all" [ngClass]="{'accordion-body-displayed': !hidden}">
+    <app-plugin *ngFor="let plugin of plugins"
+                [name]="plugin.name"
+                [imageSrc]="plugin.image"></app-plugin>
+  </div>
+<!--  <div [hidden]="hidden">-->
+<!--    <div class="pt-5 overflow-hidden max-h-0 accordion-body" [ngClass]="{'accordion-body-displayed': !hidden}" >-->
+<!--      <app-plugin *ngFor="let plugin of plugins"-->
+<!--                  [name]="plugin.name"-->
+<!--                  [imageSrc]="plugin.image"></app-plugin>-->
+<!--    </div>-->
+<!--  </div>-->
+</div>
