@@ -28,8 +28,4 @@
       </None>
     </ItemGroup>
 
-    <ItemGroup>
-      <Compile Remove="Controllers\WebUntisController.cs" />
-    </ItemGroup>
-
 </Project>

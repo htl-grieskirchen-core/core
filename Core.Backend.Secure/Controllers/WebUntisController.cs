@@ -77,5 +77,4 @@ public class WebUntisController : ControllerBase
     {
         return await _webUntisService.GetSubstitutionsFromStudent(User, startDate, endDate, personId);
     }
-    //[Authorize(Policy = "Auth-Token")]
 }
