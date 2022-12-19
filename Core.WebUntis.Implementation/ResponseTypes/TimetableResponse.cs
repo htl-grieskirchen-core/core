@@ -16,6 +16,7 @@ public class TimetableResponse
     [JsonPropertyName("text")] public string? Text { get; internal set; }
     [JsonPropertyName("statisticalFlags")] public string? StatisticalFlags { get; set; }
     [JsonPropertyName("code")] public string? Code { get; internal set; }
+    [JsonPropertyName("substText")] public string? SubstitutionText { get; internal set; }
 
     public Timetable Convert()
     {
@@ -31,7 +32,8 @@ public class TimetableResponse
             RoomIds = RoomIds,
             StatisticalFlags = StatisticalFlags,
             SubjectIds = SubjectIds,
-            TeacherIds = TeacherIds
+            TeacherIds = TeacherIds,
+            SubstitutionText = SubstitutionText
         };
     }
 }
