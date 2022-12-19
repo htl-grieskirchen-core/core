@@ -76,6 +76,7 @@ public class WebUntisClient : IWebUntisClient
         return authentication;
     }
 
+    [Obsolete]
     public async Task<Authentication> AuthenticateWithSecret(string user, string secret)
     {
         var otp = new TotpGenerator().Generate(secret);
@@ -170,7 +171,7 @@ public class WebUntisClient : IWebUntisClient
         return holidayResponse.Select(x => x.Convert());
     }
 
-    public async Task<IEnumerable<Subject>> GetSubjects() //shows every subject from arche.webuntis.com
+    public async Task<IEnumerable<Subject>> GetSubjects()
     {
         var subjectResponse = await JsonRpcRequest<SubjectResponse[]>("getSubjects");
         return subjectResponse

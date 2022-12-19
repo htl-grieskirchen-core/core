@@ -22,6 +22,8 @@ public class CredService
         //_publicKey = ImportPublicKey("./keys/"+_conf["RSA:public-key"]);
     }
 
+    public string? GetLdapPassword(Guid uuid) => DecryptPw(GetUserTokenSet(uuid).LdapPassword);
+    [Obsolete]
     public string? GetWebUntisSecret(Guid uuid) => DecryptPw(GetUserTokenSet(uuid).WebUntisSecret);
     public string? GetEduvidualToken(Guid uuid) => DecryptPw(GetUserTokenSet(uuid).EduvidualToken);
     private StoredUserTokens GetUserTokenSet(Guid uuid) => _db.StoredUserTokens.Include(x => x.User).First(x => x.UserUUID == uuid);

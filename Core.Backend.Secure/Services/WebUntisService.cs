@@ -20,7 +20,7 @@ public class WebUntisService
         if (user != null)
         {
             var webUntisCredentials = GetWebUntisCredentials(user);
-            await webUntisClient.AuthenticateWithSecret(webUntisCredentials.Username, webUntisCredentials.Secret);
+            await webUntisClient.Authenticate(webUntisCredentials.Username, webUntisCredentials.Password);
         }
 
         return webUntisClient;
@@ -30,15 +30,15 @@ public class WebUntisService
     {
         var guid = user.GetUUID();
 
-        var secret = _credService.GetWebUntisSecret(guid);
+        var password = _credService.GetLdapPassword(guid);
 
-        if (secret == null)
+        if (password == null)
             throw new NoSecretException();
 
         return new WebUntisCredentials
         {
             Username = user.GetUsername(),
-            Secret = secret
+            Password = password
         };
     }
 
@@ -70,9 +70,9 @@ public class WebUntisService
         return holidays;
     }
 
-    public async Task<IEnumerable<Subject>> GetSubject()
+    public async Task<IEnumerable<Subject>> GetSubject(ClaimsPrincipal user)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         return await webUntisClient.GetSubjects();
     }
 
@@ -98,7 +98,7 @@ public class WebUntisService
     private class WebUntisCredentials
     {
         public string Username = null!;
-        public string Secret = null!;
+        public string Password = null!;
     }
 
     private class NoSecretException : Exception
