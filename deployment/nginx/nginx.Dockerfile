@@ -18,13 +18,16 @@ RUN yarn build --prod
 
 FROM nginx:1.23
 
+COPY deployment/nginx/entrypoint.sh /entrypoint.sh
+COPY deployment/nginx/nginx.conf /etc/nginx/nginx.conf
+
 COPY mainframe /data/mainframe
 
 COPY --from=frontend-auth /app/dist/apps/auth /data/core/auth
 COPY --from=frontend /app/dist/apps/frontend /data/core/frontend
 
-COPY deployment/nginx/nginx.conf /etc/nginx/nginx.conf
-
+ENV DOMAIN_NAME=core.localhost
+ENV PROTOCOL=http
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["/entrypoint.sh"]

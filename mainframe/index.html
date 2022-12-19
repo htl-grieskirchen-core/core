@@ -40,7 +40,7 @@
 
     async function checkLoginState(secureBackendUrl) {
         try {
-            const response = await fetch(secureBackendUrl + "/Auth/IsAuthed", { credentials: "include" });
+            const response = await fetch(secureBackendUrl + "/Auth/IsAuthed", {credentials: "include"});
             if (response.status === 401)
                 return false;
             const isAuthed = await response.json();
@@ -52,9 +52,9 @@
     }
 
     function createPluginFrame(url, targetDivId) {
-        const loginFrame = document.createElement("iframe");
-        loginFrame.src = url;
-        document.getElementById(targetDivId).appendChild(loginFrame);
+        const newFrame = document.createElement("iframe");
+        newFrame.src = url;
+        document.getElementById(targetDivId).appendChild(newFrame);
     }
 
     function clearFrameContainer(targetDivId) {
@@ -64,34 +64,46 @@
         }
     }
 
-    function waitForCredentialsFromLogin() {
+    function waitForMessageFromFrame(containerId, filter) {
         return new Promise(resolve => {
-            const frame = document.getElementById("login-container").firstChild;
-            window.addEventListener("message", (event) => {
-                console.log(event);
+            const frame = document.getElementById(containerId).firstChild;
+            window.addEventListener("message", function (event) {
                 if (event.source !== frame.contentWindow) {
                     console.debug("Ignoring message from unknown source", event);
                     return;
                 }
 
-                const data = event.data;
-
-                if (data.method === "login") {
-                    if (typeof data.data === "object" &&
-                        typeof data.data.username === "string" &&
-                        typeof data.data.password === "string") {
-                        resolve({ username: data.data.username, password: data.data.password });
-                    } else {
-                        console.error("Invalid login data", data);
-                    }
+                if (filter(event.data)) {
+                    window.removeEventListener("message", this);
+                    resolve(event.data);
                 }
             });
         });
     }
 
+    async function waitForCredentialsFromLogin() {
+        return (await waitForMessageFromFrame("login-container", (data) => {
+            if (data.method === "login") {
+                if (typeof data.data === "object" &&
+                    typeof data.data.username === "string" &&
+                    typeof data.data.password === "string") {
+                    return true;
+                } else {
+                    console.error("Invalid login data", data);
+                    return false;
+                }
+            }
+        })).data;
+    }
+
     function sendErrorMessageToLogin(message) {
         const frame = document.getElementById("login-container").firstChild;
-        frame.contentWindow.postMessage({ method: "error", data: { message } }, "*");
+        frame.contentWindow.postMessage({method: "error", data: {message}}, "*");
+    }
+
+    function sendMessageToFrame(container, method, message) {
+        const frame = document.getElementById(container).firstChild;
+        frame.contentWindow.postMessage({method: method, data: message}, "*");
     }
 
     async function executeLogin(secureBackendUrl, username, password) {
@@ -110,6 +122,28 @@
 
         if (response.status === 200)
             return true;
+
+        const error = await response.json();
+
+        if (typeof error === "string")
+            throw new Error(error);
+
+        throw new Error("Es ist ein unbekannter Fehler aufgetreten!");
+    }
+
+    async function fetch2(secureBackendUrl, requestPath,method, body = undefined) {
+        const response = await fetch(secureBackendUrl + requestPath, {
+            method: method,
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            },
+            credentials: "include",
+            body: body === undefined ? undefined : JSON.stringify(body)
+        });
+
+        if (response.status === 200)
+            return await response.json();
 
         const error = await response.json();
 
@@ -140,6 +174,27 @@
         }
 
         createPluginFrame(config.navigation.url, "nav-container");
+
+        while (isAuthed) {
+            console.log     ("Waiting for plugin request");
+            const navData = await waitForMessageFromFrame("nav-container", (data) => typeof data.method === "string");
+
+            /*
+             typeof data.method === "string" &&
+                typeof data.pluginId === "string"
+             */
+            /*switch (navData.pluginId) {
+                case "navigate": doNavigateStuff(navData); break;
+            }*/
+
+            switch (navData.method) {
+                case "getIDToken":
+                    sendMessageToFrame("nav-container", "getIDToken", await fetch2(config.secureBackendUrl, "/Auth/GetIDToken", "GET"));
+            }
+
+            clearFrameContainer("plugin-container");
+            //createPluginFrame(config[navData.pluginId].url, "plugin-container");
+        }
     }
 
     main();

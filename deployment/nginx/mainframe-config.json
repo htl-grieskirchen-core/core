@@ -15,10 +15,10 @@
         }
     },
     "login": {
-        "url": "http://auth.plugin.core.localhost"
+        "url": "@@PROTOCOL@@://auth.plugin.@@DOMAIN_NAME@@"
     },
     "navigation": {
-        "url": "http://frontend.plugin.core.localhost"
+        "url": "@@PROTOCOL@@://frontend.plugin.@@DOMAIN_NAME@@"
     },
-    "secureBackendUrl": "http://secure.backend.core.localhost"
+    "secureBackendUrl": "@@PROTOCOL@@://secure.backend.@@DOMAIN_NAME@@"
 }

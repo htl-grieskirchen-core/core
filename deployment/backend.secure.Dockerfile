@@ -19,6 +19,9 @@ WORKDIR /source/Core.Backend.Secure
 RUN dotnet publish -c Release -o /app --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
+RUN apt-get update \
+    && apt-get install -y libldap-2.4 \
+    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 COPY --from=build /app .
 ENTRYPOINT ["dotnet", "Core.Backend.Secure.dll"]

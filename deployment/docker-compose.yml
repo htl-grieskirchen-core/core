@@ -7,12 +7,15 @@ services:
     build:
       context: ..
       dockerfile: deployment/nginx/nginx.Dockerfile
+    environment:
+      DOMAIN_NAME: "${DOMAIN_NAME}"
+      PROTOCOL: "${SITE_PROTOCOL}"
     depends_on:
       - backend
       - secure
     volumes:
       - ./plugins/web:/data/plugins
-      - ./nginx/mainframe-config.json:/data/mainframe/mainframe-config.json
+      - ./nginx/mainframe-config.json:/input/mainframe-config.json
     ports:
       - '80:80'
     networks:
@@ -24,6 +27,10 @@ services:
     build:
       context: ..
       dockerfile: deployment/backend.Dockerfile
+    environment:
+      RSA__public-key: "${RSA_PUBLIC_KEY_FILE}"
+    depends_on:
+      - backend-database
     volumes:
       - ./plugins/backend:/app/plugins
       - ./public-keys:/app/keys
@@ -48,7 +55,14 @@ services:
       dockerfile: deployment/backend.secure.Dockerfile
     environment:
       ConnectionStrings__Production: "server=secure-database;database=core;user=root;password=network-security"
-      MainframeOrigin: "http://mainframe.core.localhost"
+      MainframeOrigin: "${SITE_PROTOCOL}://mainframe.${DOMAIN_NAME}"
+      LDAPConfiguration__ServerIp: "${LDAP_SERVER_IP}"
+      JWT__Issuer: "${SITE_PROTOCOL}://mainframe.${DOMAIN_NAME}"
+      JWT__Audience: "${SITE_PROTOCOL}://mainframe.${DOMAIN_NAME}"
+      RSA__private-key: "${RSA_PRIVATE_KEY_FILE}"
+      RSA__public-key: "${RSA_PUBLIC_KEY_FILE}"
+    depends_on:
+      - secure-database
     volumes:
       - ./private-keys:/app/keys
     networks:
