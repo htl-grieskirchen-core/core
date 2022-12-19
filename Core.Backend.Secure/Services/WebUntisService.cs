@@ -42,23 +42,23 @@ public class WebUntisService
         };
     }
 
-    public async Task<IEnumerable<Teacher>> GetTeachers()
+    public async Task<IEnumerable<Teacher>> GetTeachers(ClaimsPrincipal user)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         var teachers = await webUntisClient.GetTeachers();
         return teachers;
     }
 
-    public async Task<IEnumerable<Student>> GetStudents()
+    public async Task<IEnumerable<Student>> GetStudents(ClaimsPrincipal user)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         var students = await webUntisClient.GetStudents();
         return students;
     }
 
-    public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
+    public async Task<IEnumerable<Homework>> GetHomeworks(ClaimsPrincipal user, DateTime startDate, DateTime endDate)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         var homeworks = await webUntisClient.GetHomeworks(startDate, endDate);
         return homeworks;
     }
@@ -70,27 +70,29 @@ public class WebUntisService
         return holidays;
     }
 
-    public async Task<IEnumerable<Subject>> GetSubject()
+    public async Task<IEnumerable<Subject>> GetSubject(ClaimsPrincipal user)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         return await webUntisClient.GetSubjects();
     }
 
-    public async Task<IEnumerable<Room>> GetRooms()
+    public async Task<IEnumerable<Room>> GetRooms(ClaimsPrincipal user)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         return await webUntisClient.GetRooms();
     }
 
-    public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(ClaimsPrincipal user, DateTime startDate,
+        DateTime endDate, int? personId)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         return await webUntisClient.GetTimetable(ElementType.Teacher, personId, startDate, endDate);
     }
 
-    public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(ClaimsPrincipal user, DateTime startDate,
+        DateTime endDate, int? personId)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         return await webUntisClient.GetTimetable(ElementType.Student, personId, startDate, endDate);
     }
 

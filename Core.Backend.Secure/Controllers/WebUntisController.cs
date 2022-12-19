@@ -18,21 +18,21 @@ public class WebUntisController : ControllerBase
     [HttpGet("Teachers")]
     public async Task<IEnumerable<Teacher>> GetTeachers()
     {
-        var teachers = await _webUntisService.GetTeachers();
+        var teachers = await _webUntisService.GetTeachers(User);
         return teachers;
     }
 
     [HttpGet("Students")]
     public async Task<IEnumerable<Student>> GetStudents()
     {
-        var students = await _webUntisService.GetStudents();
+        var students = await _webUntisService.GetStudents(User);
         return students;
     }
 
     [HttpGet("Homeworks")]
     public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
     {
-        var homeworks = await _webUntisService.GetHomeworks(startDate, endDate);
+        var homeworks = await _webUntisService.GetHomeworks(User, startDate, endDate);
         return homeworks;
     }
 
@@ -46,24 +46,27 @@ public class WebUntisController : ControllerBase
     [HttpGet("Subjects")]
     public async Task<IEnumerable<Subject>> GetSubjects()
     {
-        return await _webUntisService.GetSubject();
+        return await _webUntisService.GetSubject(User);
     }
 
     [HttpGet("Rooms")]
     public async Task<IEnumerable<Room>> GetRooms()
     {
-        return await _webUntisService.GetRooms();
+        return await _webUntisService.GetRooms(User);
     }
 
     [HttpGet("TeacherTimetable")]
-    public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate,
+        int? personId)
     {
-        return await _webUntisService.GetTimetableFromTeacher(startDate, endDate, personId);
+        return await _webUntisService.GetTimetableFromTeacher(User, startDate, endDate, personId);
     }
+
     [HttpGet("StudentTimetable")]
-    public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate, int? personId)
+    public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate,
+        int? personId)
     {
-        return await _webUntisService.GetTimetableFromStudent(startDate, endDate, personId);
+        return await _webUntisService.GetTimetableFromStudent(User, startDate, endDate, personId);
     }
 
     //[Authorize(Policy = "Auth-Token")]
