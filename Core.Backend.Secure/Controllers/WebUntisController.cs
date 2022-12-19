@@ -39,7 +39,7 @@ public class WebUntisController : ControllerBase
     [HttpGet("Holidays")]
     public async Task<IEnumerable<Holiday>> GetHolidays()
     {
-        var holidays = await _webUntisService.GetHolidays();
+        var holidays = await _webUntisService.GetHolidays(User);
         return holidays;
     }
 

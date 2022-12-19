@@ -63,9 +63,9 @@ public class WebUntisService
         return homeworks;
     }
 
-    public async Task<IEnumerable<Holiday>> GetHolidays()
+    public async Task<IEnumerable<Holiday>> GetHolidays(ClaimsPrincipal user)
     {
-        var webUntisClient = await GetWebUntisClient();
+        var webUntisClient = await GetWebUntisClient(user);
         var holidays = await webUntisClient.GetHolidays();
         return holidays;
     }

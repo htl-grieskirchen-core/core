@@ -282,7 +282,8 @@ public class WebUntisClient : IWebUntisClient
             };
         }
 
-        return JsonSerializer.Deserialize<TResponse>(await response.Content.ReadAsStringAsync())!;
+        var responseJson = await response.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<TResponse>(responseJson)!;
     }
 
     private async Task<HttpResponseMessage> Request(
