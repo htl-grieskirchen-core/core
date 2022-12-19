@@ -3,6 +3,8 @@ import {BrowserModule} from "@angular/platform-browser";
 
 import {AppComponent} from "./app.component";
 import {MainframeConnectorModule} from "mainframe-connector";
+import {SharedModule} from "./shared/shared.module";
+import {RouterTestingModule} from "@angular/router/testing";
 
 @NgModule({
   declarations: [
@@ -10,7 +12,9 @@ import {MainframeConnectorModule} from "mainframe-connector";
   ],
   imports: [
     BrowserModule,
-    MainframeConnectorModule
+    MainframeConnectorModule,
+    SharedModule,
+    RouterTestingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

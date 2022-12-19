@@ -1,0 +1,13 @@
+<div class="mb-6 flex-row">
+  <label class="block mb-2 text-sm font-medium text-gray-900" for="email">E-Mail</label>
+  <input #email
+         (input)="valid = email.checkValidity()"
+         [ngClass]="{'bg-green-50 text-green-700 dark:text-green-400 placeholder-green-700 dark:placeholder-green-500 ring-green-500 border border-green-500 dark:border-green-700 focus:ring-green-500 focus:border-green-500':valid, 'bg-red-50':!valid}"
+         id="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+         placeholder="max@musterman.com" required
+         title="Gib eine valide E-Mailadresse ein: max@musterman.com"
+         type="email"><br>
+  <label *ngIf="!valid"
+         class="text-red-700 text-xs dark:text-red-400 placeholder-red-700 dark:placeholder-red-500">Bitte geben Sie
+    eine valide Adresse ein! z.B.: max@musterman.com</label>
+</div>
