@@ -1,17 +1,21 @@
 using System.Security.Claims;
 using Core.AuthLib;
+using Core.Database;
 using Core.WebUntis.Implementation;
 using Core.WebUntis.Interface.Types;
+using Student = Core.WebUntis.Interface.Types.Student;
 
 namespace Core.Backend.Secure.Services;
 
 public class WebUntisService
 {
     private readonly CredService _credService;
+    private CoreContext _db;
 
-    public WebUntisService(CredService credService)
+    public WebUntisService(CredService credService, CoreContext db)
     {
         _credService = credService;
+        _db = db;
     }
 
     private async Task<WebUntisClient> GetWebUntisClient(ClaimsPrincipal? user = null)
@@ -42,18 +46,31 @@ public class WebUntisService
         };
     }
 
-    public async Task<IEnumerable<Teacher>> GetTeachers(ClaimsPrincipal user)
+    public IEnumerable<TeacherDTO> GetTeachers()
     {
-        var webUntisClient = await GetWebUntisClient(user);
-        var teachers = await webUntisClient.GetTeachers();
-        return teachers;
+        return _db.Teachers.Select(t => new TeacherDTO
+        {
+            Id = t.Id,
+            Name = t.Name,
+            FirstName = t.FirstName,
+            LastName = t.LastName
+        });
+
     }
 
     public async Task<IEnumerable<Student>> GetStudents(ClaimsPrincipal user)
     {
-        var webUntisClient = await GetWebUntisClient(user);
-        var students = await webUntisClient.GetStudents();
-        return students;
+        var teachers = GetTeachers();
+        var classes = await GetClasses(user);
+
+        return _db.Students.ToList().Select(s => new Student
+        {
+            FirstName = s.FirstName,
+            LastName = s.LastName,
+            Email = s.Email,
+            ClassId = classes.First(x => x.Name == s.Class).Id,
+            ClassTeacherId = teachers.First(x => $"{x.FirstName} {x.LastName}" == s.ClassTeacher).Id
+        });
     }
 
     public async Task<IEnumerable<Homework>> GetHomeworks(ClaimsPrincipal user, DateTime startDate, DateTime endDate)
@@ -82,6 +99,12 @@ public class WebUntisService
         return await webUntisClient.GetRooms();
     }
 
+    public async Task<IEnumerable<Class>> GetClasses(ClaimsPrincipal user)
+    {
+        var webUntisClient = await GetWebUntisClient(user);
+        return await webUntisClient.GetClasses();
+    }
+
     public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(ClaimsPrincipal user, DateTime startDate,
         DateTime endDate, int? personId)
     {
@@ -101,6 +124,14 @@ public class WebUntisService
     {
         var webUntisClient = await GetWebUntisClient(user);
         var items = await webUntisClient.GetTimetable(ElementType.Student, personId, startDate, endDate);
+        return items.Where(x => x.SubstitutionText == "Supplierung");
+    }
+
+    public async Task<IEnumerable<Timetable>> GetSubstitutionsFromTeacher(ClaimsPrincipal user, DateTime startDate, DateTime endDate,
+        int? personId)
+    {
+        var webUntisClient = await GetWebUntisClient(user);
+        var items = await webUntisClient.GetTimetable(ElementType.Teacher, personId, startDate, endDate);
         return items.Where(x => x.SubstitutionText == "Supplierung");
     }
 

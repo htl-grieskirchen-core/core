@@ -1,0 +1,33 @@
+<div class="overflow-x-auto relative shadow-lg rounded-lg">
+  <table class="w-full text-sm text-left text-gray-700">
+    <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+    <tr>
+      <th scope="col" class="py-3 px-6">
+          <button (click)=" titleAsc = !titleAsc; sortPlugins();" class="flex items-center focus:ring-4 focus:ring-blue-300 rounded-lg focus:outline-none">
+            TITEL
+            <svg *ngIf="!titleAsc" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-up" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <polyline points="6 15 12 9 18 15"></polyline>
+            </svg>
+            <svg *ngIf="titleAsc" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chevron-down" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+      </th>
+      <th scope="col" class="py-3 px-6">
+        Fällig bis
+      </th>
+      <th scope="col" class="py-3 px-6">
+        Betrifft
+      </th>
+      <th scope="col" class="py-3 px-6">
+        Tags
+      </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr class="bg-white border-b" app-list-view-item *ngFor="let plugin of _plugins" [plugin]="plugin"></tr>
+    </tbody>
+  </table>
+</div>

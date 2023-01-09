@@ -22,6 +22,7 @@ else
         db.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 }
 
+builder.Services.AddHostedService<CSVReaderService>();
 builder.Services.AddTransient<CredService>();
 builder.Services.AddSingleton<JwtService>();
 builder.Services.AddTransient<UserService>();
@@ -32,7 +33,6 @@ builder.Services.Configure<LdapConfiguration>(builder.Configuration.GetSection("
 builder.Services.AddTransient<ILdapClient, LdapClient>();
 
 builder.Services.AddTransient<WebUntisService>();
-
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -20,7 +20,4 @@ public class Timetable
     public Code? Code { get; set; }
 
     public string? SubstitutionText { get; set; }
-
-    //public string code { get; set; }
-    //public string statflags { get; set; }
 }

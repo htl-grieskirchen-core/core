@@ -1,6 +1,8 @@
 using Core.AuthLib;
 using Core.Backend;
 
+Pluginloader.HookAssemblyResolver();
+
 Pluginloader.LoadPlugins("plugins");
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,0 +1,21 @@
+version = 1
+
+exclude_patterns = [
+  "deployment/**",
+  "diagrams/**"
+]
+
+[[analyzers]]
+name = "secrets"
+enabled = true
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  plugins = ["angular"]
+
+[[analyzers]]
+name = "csharp"
+enabled = true

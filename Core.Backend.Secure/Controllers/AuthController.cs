@@ -50,7 +50,7 @@ public class AuthController : ControllerBase
         {
             signInResult = _authService.SignIn(signInParams);
         }
-        catch (Exception e)
+        catch (Exception e) when (e is InvalidLoginException or LdapNotReachableException)
         {
             return BadRequest(e.Message);
         }

@@ -1,0 +1,5 @@
+<app-category *ngFor="let course of categories"
+              [plugins]="plugins"
+              [title]="course.name"
+              [icon]="course.icon"
+              class="w-full"></app-category>

@@ -11,7 +11,7 @@ public class UserDTO
 
     public string? Class { get; set; }
 
-    public string Role { get; set; }
+    public string Role { get; set; } = null!;
 
     public string DisplayName { get; set; } = null!;
 

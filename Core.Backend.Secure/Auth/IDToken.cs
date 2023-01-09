@@ -19,12 +19,12 @@ public class IDToken : AuthToken
     /// <summary>
     /// Email
     /// </summary>
-    public string? Email { get; set; }
+    public string Email { get; set; } = null!;
 
     /// <summary>
     /// Display Name
     /// </summary>
-    public string DisplayName { get; set; }
+    public string DisplayName { get; set; } = null!;
 
     /// <summary>
     /// matrikelnummer - nur bei Schülern verfügbar

@@ -16,17 +16,21 @@ public class WebUntisController : ControllerBase
     }
 
     [HttpGet("Teachers")]
-    public async Task<IEnumerable<Teacher>> GetTeachers()
+    public IEnumerable<TeacherDTO> GetTeachers()
     {
-        var teachers = await _webUntisService.GetTeachers(User);
-        return teachers;
+        return _webUntisService.GetTeachers();
     }
 
     [HttpGet("Students")]
     public async Task<IEnumerable<Student>> GetStudents()
     {
-        var students = await _webUntisService.GetStudents(User);
-        return students;
+        return await _webUntisService.GetStudents(User);
+    }
+
+    [HttpGet("Classes")]
+    public async Task<IEnumerable<Class>> GetClasses()
+    {
+        return await _webUntisService.GetClasses(User);
     }
 
     [HttpGet("Homeworks")]
@@ -55,7 +59,6 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetRooms(User);
     }
 
-    [Obsolete("SIMON")]
     [HttpGet("TeacherTimetable")]
     public async Task<IEnumerable<Timetable>> GetTimetableFromTeacher(DateTime startDate, DateTime endDate,
         int? personId)
@@ -63,7 +66,6 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetTimetableFromTeacher(User, startDate, endDate, personId);
     }
 
-    [Obsolete("SIMON")]
     [HttpGet("StudentTimetable")]
     public async Task<IEnumerable<Timetable>> GetTimetableFromStudent(DateTime startDate, DateTime endDate,
         int? personId)
@@ -71,10 +73,15 @@ public class WebUntisController : ControllerBase
         return await _webUntisService.GetTimetableFromStudent(User, startDate, endDate, personId);
     }
 
-    [Obsolete("SIMON")]
     [HttpGet("StudentSubstitutionTimetable")]
     public async Task<IEnumerable<Timetable>> GetSubstitutionsFromStudent(DateTime startDate, DateTime endDate, int? personId)
     {
         return await _webUntisService.GetSubstitutionsFromStudent(User, startDate, endDate, personId);
+    }
+
+    [HttpGet("TeacherSubstitutionTimetable")]
+    public async Task<IEnumerable<Timetable>> GetSubstitutionsFromTeacher(DateTime startDate, DateTime endDate, int? personId)
+    {
+        return await _webUntisService.GetSubstitutionsFromTeacher(User, startDate, endDate, personId);
     }
 }

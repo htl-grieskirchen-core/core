@@ -93,22 +93,6 @@ public class WebUntisClient : IWebUntisClient
             .Select(x => x.Convert());
     }
 
-    public async Task<IEnumerable<Teacher>> GetTeachers()
-    {
-        var teachers = File.ReadLines("CSV/teachers.csv")
-            .Skip(1)
-            .Select(x => x.Split(";"))
-            .Select(x => new Teacher
-            {
-                Id = Int32.Parse(x[0]),
-                Name = x[1],
-                LastName = x[2],
-                FirstName = x[3]
-            }
-            );
-        return teachers;
-    }
-
     public async Task<IEnumerable<Homework>> GetHomeworks(DateTime startDate, DateTime endDate)
     {
         var homeworkResponse = await RestRequest<HomeworkResponse>(
@@ -163,27 +147,6 @@ public class WebUntisClient : IWebUntisClient
     public Task<IEnumerable<Exam>> GetExams(int examTypeId, DateTime startDate, DateTime endDate)
     {
         throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<Student>> GetStudents()
-    {
-        var classes = await GetClasses();
-        var teachers = await GetTeachers();
-
-        var students = File.ReadLines("CSV/students.csv")
-            .Skip(1)
-            .Select(x => x.Split(";"))
-            .Select(student => new Student()
-            {
-                ClassId = classes.Single(x => x.Name == student[0].ToUpper()).Id,
-                ClassTeacherId = teachers.Single(x => $"{x.FirstName} {x.LastName}" == student[1]).Id,
-                LastName = student[2],
-                FirstName = student[3],
-                Email = student[4]
-            }
-            )
-            .ToList();
-        return students;
     }
 
     private async Task<TResponse> JsonRpcRequest<TResponse>(
