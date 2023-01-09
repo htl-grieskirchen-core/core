@@ -10,7 +10,11 @@ public static class Pluginloader
 
     public static WebApplicationBuilder InjectBuilderToPlugin(this WebApplicationBuilder builder)
     {
-        Plugins.ForEach(plugin => plugin.ConfigureServices(builder));
+        Plugins.ForEach(plugin =>
+        {
+            plugin.ConfigureServices(builder);
+            builder.Services.AddControllers().AddApplicationPart(plugin.GetType().Assembly);
+        });
         return builder;
     }
 
