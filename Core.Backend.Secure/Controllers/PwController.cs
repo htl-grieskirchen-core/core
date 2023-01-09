@@ -31,20 +31,6 @@ public class PwController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult SetWebuntisToken([FromBody] string token)
-    {
-        try
-        {
-            _cred.SaveToken(User.GetUUID(), token, "webuntis");
-            return Ok();
-        }
-        catch (AuthException e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    [HttpPost]
     public ActionResult SaveLdapPassword([FromBody] LdapUserDto ldapUserDto)
     {
         try

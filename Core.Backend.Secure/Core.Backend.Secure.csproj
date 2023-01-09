@@ -24,9 +24,12 @@
       <ProjectReference Include="..\Core.Database\Core.Database.csproj" />
       <ProjectReference Include="..\Core.Ldap.Implementation\Core.Ldap.Implementation.csproj" />
       <ProjectReference Include="..\Core.Ldap.Interface\Core.Ldap.Interface.csproj" />
+      <ProjectReference Include="..\Core.WebUntis.Implementation\Core.WebUntis.Implementation.csproj" />
+      <ProjectReference Include="..\Core.WebUntis.Interface\Core.WebUntis.Interface.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="CSV" />
       <Folder Include="keys" />
     </ItemGroup>
 

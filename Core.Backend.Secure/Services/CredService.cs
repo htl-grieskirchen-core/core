@@ -22,7 +22,7 @@ public class CredService
         //_publicKey = ImportPublicKey("./keys/"+_conf["RSA:public-key"]);
     }
 
-    public string? GetWebuntisToken(Guid uuid) => DecryptPw(GetUserTokenSet(uuid).WebUntisToken);
+    public string? GetLdapPassword(Guid uuid) => DecryptPw(GetUserTokenSet(uuid).LdapPassword);
     public string? GetEduvidualToken(Guid uuid) => DecryptPw(GetUserTokenSet(uuid).EduvidualToken);
     private StoredUserTokens GetUserTokenSet(Guid uuid) => _db.StoredUserTokens.Include(x => x.User).First(x => x.UserUUID == uuid);
     private string? DecryptPw(string? pw) => pw is not null ? Encoding.UTF8.GetString(_rsa.Decrypt(Convert.FromBase64String(pw), RSAEncryptionPadding.OaepSHA512)) : pw;
@@ -33,10 +33,6 @@ public class CredService
         var userTokens = GetUserTokenSet(uuid);
         switch (type)
         {
-            case "webuntis":
-                userTokens.WebUntisToken = token;
-                _db.SaveChanges();
-                break;
             case "eduvidual":
                 userTokens.EduvidualToken = token;
                 _db.SaveChanges();
