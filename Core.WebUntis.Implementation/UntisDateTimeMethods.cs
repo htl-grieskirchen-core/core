@@ -16,7 +16,10 @@ public class UntisDateTimeMethods
 
     public static DateTime ConvertUntisTimeToTime(int time)
     {
-        return DateTime.ParseExact(time.ToString(), "HHmm", CultureInfo.InvariantCulture);
+        string timeAsString = time.ToString();
+        int padding = 4 - timeAsString.Length;
+        timeAsString = $"{new string('0', padding)}{timeAsString}";
+        return DateTime.ParseExact(timeAsString, "HHmm", CultureInfo.InvariantCulture);
     }
 
     public static int ConvertTimeToUntisTime(DateTime time)
