@@ -1,12 +1,18 @@
 <div class="flex h-full py-16">
   <div class="h-full w-full flex text-white bg-gradient-to-br from-[#00FF38] to-[#0400D2] m-auto rounded-2xl drop-shadow-2xl">
     <div class="m-auto">
-      <p class="italic font-bold text-2xl">Today is a good day.</p>
-      <p class="font-bold text-center">- Groanes</p>
+      <div *ngIf="showImage">
+        <img [src]="Quote">
+        <p class="font-bold text-center">{{SubmittedBy}}</p>
+      </div>
+      <div *ngIf="!showImage">
+        <p class="italic font-bold text-2xl">{{Quote ?? "Today is a good day."}}</p>
+        <p class="font-bold text-center">- {{SubmittedBy ?? "Groanes"}}</p>
+      </div>
     </div>
     <div class="fixed bottom-0 flex justify-between w-full p-6">
-      <span class="font-bold">Quote of the day #20</span>
-      <span class="font-bold">q221009</span>
+      <span class="font-bold">Quote of the day #{{QuoteID}}</span>
+      <span class="font-bold">{{(QuoteDate | date) ?? "q221009"}}</span>
     </div>
   </div>
 </div>

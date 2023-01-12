@@ -31,6 +31,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(app => app.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
 app.UseAuthorization();
 
 app.MapControllers();
